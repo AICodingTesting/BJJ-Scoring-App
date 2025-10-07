@@ -1,104 +1,152 @@
 import Foundation
 import AVFoundation
-import Combine
 
+extension AVAssetExportSession: @unchecked Sendable {}
+
+/// ViewModel responsible for exporting video assets asynchronously.
+@MainActor
 final class ExportViewModel: ObservableObject {
+    /// Progress of the export operation, ranging from 0.0 to 1.0.
+    @Published var exportProgress: Double = 0.0
+    /// Indicates whether an export operation is currently in progress.
     @Published var isExporting: Bool = false
-    @Published var progress: Double = 0
-    @Published var lastExportURL: URL?
-    @Published var error: Error?
+    /// Indicates whether the export operation completed successfully.
+    @Published var exportCompleted: Bool = false
+    /// URL of the exported video file upon successful completion.
+    @Published var exportURL: URL?
+    /// Error encountered during export, if any.
+    @Published var exportError: Error?
 
-    private var exportSession: AVAssetExportSession?
-    private var timer: Timer?
+    private var exporter: AVAssetExportSession?
+    private var progressTask: Task<Void, Never>?
 
-    func export(project: Project, sourceURL: URL, completion: ((Result<URL, Error>) -> Void)? = nil) {
-        cancel()
+    /// Cleans up any ongoing export tasks when the ViewModel is deinitialized.
+    deinit {
+        Task { @MainActor in
+            progressTask?.cancel()
+            exporter?.cancelExport()
+            resetState()
+        }
+    }
+
+    /// Resets the export state and clears exporter and progressTask.
+    /// This method must be called on the MainActor.
+    @MainActor
+    private func resetState() {
+        progressTask = nil
+        exporter = nil
+    }
+
+    /// Starts exporting the video from the given project asynchronously.
+    /// - Parameter project: The project containing the video bookmark to export.
+    @discardableResult
+    func startExport(from project: Project) async {
+        guard !isExporting else { return }
+
+        exportProgress = 0.0
         isExporting = true
-        progress = 0
-        error = nil
+        exportCompleted = false
+        exportError = nil
 
         do {
-            let builder = CompositionBuilder()
-            let package = try builder.build(from: sourceURL, project: project)
-            try? FileManager.default.removeItem(at: package.outputURL)
-            guard let session = AVAssetExportSession(asset: package.composition, presetName: preset(for: project.exportPreferences.resolution)) else {
-                handleFailure(CompositionBuilderError.missingAsset, completion: completion)
+            let videoURL: URL
+            do {
+                videoURL = try await BookmarkResolver.resolveBookmark(project.videoBookmark)
+            } catch {
+                exportError = error
+                isExporting = false
                 return
             }
-            exportSession = session
-            session.outputURL = package.outputURL
-            session.outputFileType = .mp4
-            session.videoComposition = package.videoComposition
-            session.shouldOptimizeForNetworkUse = true
 
-            startProgressUpdates()
+            let asset = AVAsset(url: videoURL)
 
-            session.exportAsynchronously { [weak self] in
-                DispatchQueue.main.async {
-                    guard let self else { return }
-                    self.stopProgressUpdates()
-                    switch session.status {
+            let exportSession = await withCheckedContinuation { continuation in
+                DispatchQueue.global(qos: .userInitiated).async {
+                    let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
+                    continuation.resume(returning: session)
+                }
+            }
+
+            guard let exportSession else {
+                exportError = NSError(domain: "ExportViewModel", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to create export session."])
+                isExporting = false
+                return
+            }
+
+            // Prevent starting a new export if one is already active
+            guard exporter == nil else {
+                return
+            }
+
+            exporter = exportSession
+            let tempDirectory = FileManager.default.temporaryDirectory
+            let outputURL = tempDirectory.appendingPathComponent(UUID().uuidString).appendingPathExtension("mov")
+            exportSession.outputURL = outputURL
+            exportSession.outputFileType = .mov
+
+            exportSession.exportAsynchronously { [weak self, weak exportSession] in
+                Task { @MainActor in
+                    guard let self = self, let exportSession = exportSession else { return }
+                    self.isExporting = false
+
+                    switch exportSession.status {
                     case .completed:
-                        self.isExporting = false
-                        self.lastExportURL = package.outputURL
-                        completion?(.success(package.outputURL))
-                    case .failed, .cancelled:
-                        let failure = session.error ?? CompositionBuilderError.missingAsset
-                        self.handleFailure(failure, completion: completion)
+                        self.exportCompleted = true
+                        self.exportURL = outputURL
+                        print("Export completed successfully: \(outputURL)")
+                    case .failed:
+                        self.exportError = exportSession.error
+                        print("Export failed with error: \(String(describing: exportSession.error))")
+                    case .cancelled:
+                        self.exportError = NSError(domain: "ExportViewModel", code: -2, userInfo: [NSLocalizedDescriptionKey: "Export was cancelled."])
+                        print("Export was cancelled.")
                     default:
                         break
                     }
+
+                    self.progressTask?.cancel()
+                    self.progressTask = nil
+                    self.resetState()
+                }
+            }
+
+            progressTask?.cancel()
+            progressTask = Task { [weak self] in
+                guard let self = self else { return }
+                do {
+                    while let exportSession = exportSession, exportSession.status == .exporting {
+                        try Task.checkCancellation()
+                        try await Task.sleep(nanoseconds: 200_000_000)
+                        await MainActor.run {
+                            self.exportProgress = Double(exportSession.progress)
+                        }
+                    }
+                } catch {
+                    // Task was cancelled or error occurred, safely ignore
+                }
+                await MainActor.run {
+                    self.progressTask = nil
+                    self.exportProgress = 1.0
                 }
             }
         } catch {
-            handleFailure(error, completion: completion)
+            exportError = error
+            isExporting = false
+            progressTask?.cancel()
+            progressTask = nil
+            resetState()
         }
     }
 
-    func cancel() {
-        exportSession?.cancelExport()
-        stopProgressUpdates()
-        exportSession = nil
-        isExporting = false
-        progress = 0
-    }
-
-    private func preset(for resolution: ExportResolution) -> String {
-        switch resolution {
-        case .p720:
-            return AVAssetExportPreset1280x720
-        case .p1080:
-            return AVAssetExportPreset1920x1080
-        case .p4K:
-            return AVAssetExportPreset3840x2160
-        }
-    }
-
-    private func startProgressUpdates() {
-        timer?.invalidate()
-        guard let session = exportSession else { return }
-        timer = Timer.scheduledTimer(withTimeInterval: 0.2, repeats: true) { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.progress = Double(session.progress)
-            }
-        }
-    }
-
-    private func stopProgressUpdates() {
-        timer?.invalidate()
-        timer = nil
-        progress = exportSession?.progress.doubleValue ?? 0
-    }
-
-    private func handleFailure(_ error: Error, completion: ((Result<URL, Error>) -> Void)?) {
-        DispatchQueue.main.async {
+    /// Cancels any ongoing export operation safely and resets the export state.
+    func cancelExport() {
+        progressTask?.cancel()
+        exporter?.cancelExport()
+        Task { @MainActor [weak self] in
+            guard let self = self else { return }
             self.isExporting = false
-            self.error = error
-            completion?(.failure(error))
+            self.progressTask = nil
+            self.resetState()
         }
     }
-}
-
-private extension Float {
-    var doubleValue: Double { Double(self) }
-}
+} 

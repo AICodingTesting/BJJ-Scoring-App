@@ -1,479 +1,484 @@
 // !$*UTF8*$!
 {
-archiveVersion = 1;
-classes = {
-};
-objectVersion = 56;
-objects = {
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
 
 /* Begin PBXBuildFile section */
-B29D0B3C864C43269E348C11 /* BJJScoreTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F174D0E4FD14DAC8C764843 /* BJJScoreTrackerApp.swift */; };
-CF4DD0C32F794818BB8D05CA /* CompositionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23947F661464DBC9FEDEBE9 /* CompositionBuilder.swift */; };
-224D11504C91495FBBE94B09 /* OverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1257FC4C6644FAB0AAB58F /* OverlayRenderer.swift */; };
-E042BB050A3C46BC8DF09D3E /* Competitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5ED783EF254404A3BCE58F /* Competitor.swift */; };
-1859FE59E72B4BF09BB18EE9 /* ExportPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC9E6D40B5341DAB0356EE7 /* ExportPreferences.swift */; };
-A0ADC79DFCC74E71ACAF7EC8 /* MatchMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E584E2E7D432A9905C2A5 /* MatchMetadata.swift */; };
-56ECD84CA540458AB9FA35AC /* MatchNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A525EF9BC684FD9AE4A8042 /* MatchNote.swift */; };
-F94711D822454A3D95821AA4 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BED926452F4E4CA1015936 /* Project.swift */; };
-C6CBE14B301648CEA26E32A0 /* ScoreEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9687B036C4A4ACAA4F92DFD /* ScoreEvent.swift */; };
-0EB05B976C6543DBA61C794A /* ScoreReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51822CD754854C4A89D4F0ED /* ScoreReducer.swift */; };
-3DA55CA79E8C481986A44845 /* ScoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D64951F4FC43229E10064B /* ScoreState.swift */; };
-CB98D7C1B16B447C86104365 /* BookmarkResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7943005063E147A7AE21891E /* BookmarkResolver.swift */; };
-E61C5F94065947D8BB93152E /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8F44476B2B4A55BF6DBABA /* HapticsManager.swift */; };
-6B463307B2F14F0BB7B14B86 /* LayoutAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F5AAC233047D88F95ECC8 /* LayoutAdapter.swift */; };
-1118E37045BD4DB7A6764451 /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8DBCE8282A464A88E2EF67 /* TimeFormatter.swift */; };
-B82EB5AC22354E3C8AD44A61 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8107A0BDD98741DEB66619CD /* PlayerViewModel.swift */; };
-821C175B5A5D481BAB517D70 /* ProjectStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B487C3E7573D4B69B59DE0C5 /* ProjectStore.swift */; };
-0A996852543B471EAE42E343 /* TimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD78C59C1BA4DF6A0A1EE3B /* TimelineViewModel.swift */; };
-ACF8B9CBA273426188BC37AE /* ExportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F924ADE9F64BB68FD203EF /* ExportViewModel.swift */; };
-6A5F72609F5C4D588572D44B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C9E2D160EC4F3FB3B59C72 /* ContentView.swift */; };
-906B3C1891004B23A609F074 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080B1C26739F4AE8B9AFE147 /* ControlsView.swift */; };
-68A0ADC170C0407E9C36C595 /* EventEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0265B6EBC49040E3BE611527 /* EventEditView.swift */; };
-44854042D14F4167BEF5DC85 /* EventHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBDEF18AB4F44F8872A4903 /* EventHistoryView.swift */; };
-62AF19C1D78E438CA96023E6 /* ExportSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955FF5994BD345FA8AF2324A /* ExportSettingsView.swift */; };
-A1A3A1668AEA4BE9A8F1A0C1 /* MetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DA0BC3306946189356ADB9 /* MetadataView.swift */; };
-769D9CFFFA534D15A0D84BBC /* NotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0D6286729493B891C6D83 /* NotesView.swift */; };
-ADD6CE18842F479694107A76 /* ScoreOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9CEE1029044D069CCF74A7 /* ScoreOverlayView.swift */; };
-F64AB0B59C3F4665B17F1B42 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D363ACD1D294E499509BABA /* VideoPlayerView.swift */; };
-19B9E18FE65C4493A6E80AA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F7E29BC4038470EAE5DFB58 /* Assets.xcassets */; };
-FCA907237A764B4AB08A733D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86EB15A7C5CE4406AFD0F43E /* Preview Assets.xcassets */; };
+		0A996852543B471EAE42E343 /* TimelineViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD78C59C1BA4DF6A0A1EE3B /* TimelineViewModel.swift */; };
+		0EB05B976C6543DBA61C794A /* ScoreReducer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51822CD754854C4A89D4F0ED /* ScoreReducer.swift */; };
+		1118E37045BD4DB7A6764451 /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A8DBCE8282A464A88E2EF67 /* TimeFormatter.swift */; };
+		1859FE59E72B4BF09BB18EE9 /* ExportPreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFC9E6D40B5341DAB0356EE7 /* ExportPreferences.swift */; };
+		19B9E18FE65C4493A6E80AA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F7E29BC4038470EAE5DFB58 /* Assets.xcassets */; };
+		224D11504C91495FBBE94B09 /* OverlayRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1257FC4C6644FAB0AAB58F /* OverlayRenderer.swift */; };
+		3DA55CA79E8C481986A44845 /* ScoreState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0D64951F4FC43229E10064B /* ScoreState.swift */; };
+		44854042D14F4167BEF5DC85 /* EventHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DEBDEF18AB4F44F8872A4903 /* EventHistoryView.swift */; };
+		56ECD84CA540458AB9FA35AC /* MatchNote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A525EF9BC684FD9AE4A8042 /* MatchNote.swift */; };
+		62AF19C1D78E438CA96023E6 /* ExportSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 955FF5994BD345FA8AF2324A /* ExportSettingsView.swift */; };
+		68A0ADC170C0407E9C36C595 /* EventEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0265B6EBC49040E3BE611527 /* EventEditView.swift */; };
+		6A5F72609F5C4D588572D44B /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5C9E2D160EC4F3FB3B59C72 /* ContentView.swift */; };
+		6B463307B2F14F0BB7B14B86 /* LayoutAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2E8F5AAC233047D88F95ECC8 /* LayoutAdapter.swift */; };
+		769D9CFFFA534D15A0D84BBC /* NotesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0DB0D6286729493B891C6D83 /* NotesView.swift */; };
+		821C175B5A5D481BAB517D70 /* ProjectStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = B487C3E7573D4B69B59DE0C5 /* ProjectStore.swift */; };
+		906B3C1891004B23A609F074 /* ControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080B1C26739F4AE8B9AFE147 /* ControlsView.swift */; };
+		A0ADC79DFCC74E71ACAF7EC8 /* MatchMetadata.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E584E2E7D432A9905C2A5 /* MatchMetadata.swift */; };
+		A1A3A1668AEA4BE9A8F1A0C1 /* MetadataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2DA0BC3306946189356ADB9 /* MetadataView.swift */; };
+		ACF8B9CBA273426188BC37AE /* ExportViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F924ADE9F64BB68FD203EF /* ExportViewModel.swift */; };
+		ADD6CE18842F479694107A76 /* ScoreOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D9CEE1029044D069CCF74A7 /* ScoreOverlayView.swift */; };
+		B29D0B3C864C43269E348C11 /* BJJScoreTrackerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F174D0E4FD14DAC8C764843 /* BJJScoreTrackerApp.swift */; };
+		B82EB5AC22354E3C8AD44A61 /* PlayerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8107A0BDD98741DEB66619CD /* PlayerViewModel.swift */; };
+		C6CBE14B301648CEA26E32A0 /* ScoreEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9687B036C4A4ACAA4F92DFD /* ScoreEvent.swift */; };
+		CB98D7C1B16B447C86104365 /* BookmarkResolver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7943005063E147A7AE21891E /* BookmarkResolver.swift */; };
+		CF4DD0C32F794818BB8D05CA /* CompositionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23947F661464DBC9FEDEBE9 /* CompositionBuilder.swift */; };
+		E042BB050A3C46BC8DF09D3E /* Competitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5ED783EF254404A3BCE58F /* Competitor.swift */; };
+		E61C5F94065947D8BB93152E /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8F44476B2B4A55BF6DBABA /* HapticsManager.swift */; };
+		F64AB0B59C3F4665B17F1B42 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D363ACD1D294E499509BABA /* VideoPlayerView.swift */; };
+		F94711D822454A3D95821AA4 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BED926452F4E4CA1015936 /* Project.swift */; };
+		FCA907237A764B4AB08A733D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86EB15A7C5CE4406AFD0F43E /* Preview Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-9F174D0E4FD14DAC8C764843 /* BJJScoreTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BJJScoreTrackerApp.swift; sourceTree = "<group>"; };
-B23947F661464DBC9FEDEBE9 /* CompositionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CompositionBuilder.swift; path = Export/CompositionBuilder.swift; sourceTree = "<group>"; };
-3F1257FC4C6644FAB0AAB58F /* OverlayRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OverlayRenderer.swift; path = Export/OverlayRenderer.swift; sourceTree = "<group>"; };
-5B5ED783EF254404A3BCE58F /* Competitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Competitor.swift; path = Models/Competitor.swift; sourceTree = "<group>"; };
-EFC9E6D40B5341DAB0356EE7 /* ExportPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExportPreferences.swift; path = Models/ExportPreferences.swift; sourceTree = "<group>"; };
-EA5E584E2E7D432A9905C2A5 /* MatchMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MatchMetadata.swift; path = Models/MatchMetadata.swift; sourceTree = "<group>"; };
-6A525EF9BC684FD9AE4A8042 /* MatchNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MatchNote.swift; path = Models/MatchNote.swift; sourceTree = "<group>"; };
-A9BED926452F4E4CA1015936 /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Project.swift; path = Models/Project.swift; sourceTree = "<group>"; };
-E9687B036C4A4ACAA4F92DFD /* ScoreEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreEvent.swift; path = Models/ScoreEvent.swift; sourceTree = "<group>"; };
-51822CD754854C4A89D4F0ED /* ScoreReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreReducer.swift; path = Models/ScoreReducer.swift; sourceTree = "<group>"; };
-F0D64951F4FC43229E10064B /* ScoreState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreState.swift; path = Models/ScoreState.swift; sourceTree = "<group>"; };
-7943005063E147A7AE21891E /* BookmarkResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BookmarkResolver.swift; path = Persistence/BookmarkResolver.swift; sourceTree = "<group>"; };
-EF8F44476B2B4A55BF6DBABA /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HapticsManager.swift; path = Utilities/HapticsManager.swift; sourceTree = "<group>"; };
-2E8F5AAC233047D88F95ECC8 /* LayoutAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LayoutAdapter.swift; path = Utilities/LayoutAdapter.swift; sourceTree = "<group>"; };
-7A8DBCE8282A464A88E2EF67 /* TimeFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TimeFormatter.swift; path = Utilities/TimeFormatter.swift; sourceTree = "<group>"; };
-8107A0BDD98741DEB66619CD /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PlayerViewModel.swift; path = ViewModels/PlayerViewModel.swift; sourceTree = "<group>"; };
-B487C3E7573D4B69B59DE0C5 /* ProjectStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectStore.swift; path = ViewModels/ProjectStore.swift; sourceTree = "<group>"; };
-FFD78C59C1BA4DF6A0A1EE3B /* TimelineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TimelineViewModel.swift; path = ViewModels/TimelineViewModel.swift; sourceTree = "<group>"; };
-B2F924ADE9F64BB68FD203EF /* ExportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExportViewModel.swift; path = ViewModels/ExportViewModel.swift; sourceTree = "<group>"; };
-C5C9E2D160EC4F3FB3B59C72 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = Views/ContentView.swift; sourceTree = "<group>"; };
-080B1C26739F4AE8B9AFE147 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ControlsView.swift; path = Views/ControlsView.swift; sourceTree = "<group>"; };
-0265B6EBC49040E3BE611527 /* EventEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventEditView.swift; path = Views/EventEditView.swift; sourceTree = "<group>"; };
-DEBDEF18AB4F44F8872A4903 /* EventHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventHistoryView.swift; path = Views/EventHistoryView.swift; sourceTree = "<group>"; };
-955FF5994BD345FA8AF2324A /* ExportSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExportSettingsView.swift; path = Views/ExportSettingsView.swift; sourceTree = "<group>"; };
-E2DA0BC3306946189356ADB9 /* MetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetadataView.swift; path = Views/MetadataView.swift; sourceTree = "<group>"; };
-0DB0D6286729493B891C6D83 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotesView.swift; path = Views/NotesView.swift; sourceTree = "<group>"; };
-2D9CEE1029044D069CCF74A7 /* ScoreOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreOverlayView.swift; path = Views/ScoreOverlayView.swift; sourceTree = "<group>"; };
-4D363ACD1D294E499509BABA /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoPlayerView.swift; path = Views/VideoPlayerView.swift; sourceTree = "<group>"; };
-6F7E29BC4038470EAE5DFB58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-86EB15A7C5CE4406AFD0F43E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-DC6EB3F1133745F494373A34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-809C580EB1504C7BB59BA46C /* BJJScoreTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BJJScoreTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0265B6EBC49040E3BE611527 /* EventEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventEditView.swift; path = Views/EventEditView.swift; sourceTree = "<group>"; };
+		080B1C26739F4AE8B9AFE147 /* ControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ControlsView.swift; path = Views/ControlsView.swift; sourceTree = "<group>"; };
+		0DB0D6286729493B891C6D83 /* NotesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotesView.swift; path = Views/NotesView.swift; sourceTree = "<group>"; };
+		2D9CEE1029044D069CCF74A7 /* ScoreOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreOverlayView.swift; path = Views/ScoreOverlayView.swift; sourceTree = "<group>"; };
+		2E8F5AAC233047D88F95ECC8 /* LayoutAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LayoutAdapter.swift; path = Utilities/LayoutAdapter.swift; sourceTree = "<group>"; };
+		3F1257FC4C6644FAB0AAB58F /* OverlayRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OverlayRenderer.swift; path = Export/OverlayRenderer.swift; sourceTree = "<group>"; };
+		4D363ACD1D294E499509BABA /* VideoPlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = VideoPlayerView.swift; path = Views/VideoPlayerView.swift; sourceTree = "<group>"; };
+		51822CD754854C4A89D4F0ED /* ScoreReducer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreReducer.swift; path = Models/ScoreReducer.swift; sourceTree = "<group>"; };
+		5B5ED783EF254404A3BCE58F /* Competitor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Competitor.swift; path = Models/Competitor.swift; sourceTree = "<group>"; };
+		6A525EF9BC684FD9AE4A8042 /* MatchNote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MatchNote.swift; path = Models/MatchNote.swift; sourceTree = "<group>"; };
+		6F7E29BC4038470EAE5DFB58 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7943005063E147A7AE21891E /* BookmarkResolver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BookmarkResolver.swift; path = Persistence/BookmarkResolver.swift; sourceTree = "<group>"; };
+		7A8DBCE8282A464A88E2EF67 /* TimeFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TimeFormatter.swift; path = Utilities/TimeFormatter.swift; sourceTree = "<group>"; };
+		809C580EB1504C7BB59BA46C /* BJJScoreTracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BJJScoreTracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8107A0BDD98741DEB66619CD /* PlayerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PlayerViewModel.swift; path = ViewModels/PlayerViewModel.swift; sourceTree = "<group>"; };
+		86EB15A7C5CE4406AFD0F43E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		955FF5994BD345FA8AF2324A /* ExportSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExportSettingsView.swift; path = Views/ExportSettingsView.swift; sourceTree = "<group>"; };
+		9F174D0E4FD14DAC8C764843 /* BJJScoreTrackerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BJJScoreTrackerApp.swift; sourceTree = "<group>"; };
+		A9BED926452F4E4CA1015936 /* Project.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Project.swift; path = Models/Project.swift; sourceTree = "<group>"; };
+		B23947F661464DBC9FEDEBE9 /* CompositionBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CompositionBuilder.swift; path = Export/CompositionBuilder.swift; sourceTree = "<group>"; };
+		B2F924ADE9F64BB68FD203EF /* ExportViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExportViewModel.swift; path = ViewModels/ExportViewModel.swift; sourceTree = "<group>"; };
+		B487C3E7573D4B69B59DE0C5 /* ProjectStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ProjectStore.swift; path = ViewModels/ProjectStore.swift; sourceTree = "<group>"; };
+		C5C9E2D160EC4F3FB3B59C72 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ContentView.swift; path = Views/ContentView.swift; sourceTree = "<group>"; };
+		DC6EB3F1133745F494373A34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DEBDEF18AB4F44F8872A4903 /* EventHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventHistoryView.swift; path = Views/EventHistoryView.swift; sourceTree = "<group>"; };
+		E2DA0BC3306946189356ADB9 /* MetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetadataView.swift; path = Views/MetadataView.swift; sourceTree = "<group>"; };
+		E9687B036C4A4ACAA4F92DFD /* ScoreEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreEvent.swift; path = Models/ScoreEvent.swift; sourceTree = "<group>"; };
+		EA5E584E2E7D432A9905C2A5 /* MatchMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MatchMetadata.swift; path = Models/MatchMetadata.swift; sourceTree = "<group>"; };
+		EF8F44476B2B4A55BF6DBABA /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HapticsManager.swift; path = Utilities/HapticsManager.swift; sourceTree = "<group>"; };
+		EFC9E6D40B5341DAB0356EE7 /* ExportPreferences.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ExportPreferences.swift; path = Models/ExportPreferences.swift; sourceTree = "<group>"; };
+		F0D64951F4FC43229E10064B /* ScoreState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreState.swift; path = Models/ScoreState.swift; sourceTree = "<group>"; };
+		FFD78C59C1BA4DF6A0A1EE3B /* TimelineViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = TimelineViewModel.swift; path = ViewModels/TimelineViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-9457B2D4D5E6423B8D7671A7 /* Frameworks */ = {
-isa = PBXFrameworksBuildPhase;
-buildActionMask = 2147483647;
-files = (
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
+		9457B2D4D5E6423B8D7671A7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-67BA9008EADA418DB07EBF92 = {
-isa = PBXGroup;
-children = (
-9F174D0E4FD14DAC8C764843 /* BJJScoreTrackerApp.swift */,
-D22F5EF9794B450B9FC75DEB /* Export */,
-EC5AB3C1258D4117981F4307 /* Models */,
-A09B32B9906B410B9E67D931 /* Persistence */,
-5FF551676D144B588C0C4BE0 /* Utilities */,
-3BCEC4F40211418D98D2B158 /* ViewModels */,
-BF2A32B346FE42A799C7FC46 /* Views */,
-88E2E5E2429F4B8D9C11757C /* BJJScoreTracker */,
-5915283BA22F4B11ACF43822 /* Products */
-);
-sourceTree = "<group>";
-};
-D22F5EF9794B450B9FC75DEB /* Export */ = {
-isa = PBXGroup;
-children = (
-B23947F661464DBC9FEDEBE9 /* CompositionBuilder.swift */,
-3F1257FC4C6644FAB0AAB58F /* OverlayRenderer.swift */,
-);
-name = Export;
-sourceTree = "<group>";
-};
-EC5AB3C1258D4117981F4307 /* Models */ = {
-isa = PBXGroup;
-children = (
-5B5ED783EF254404A3BCE58F /* Competitor.swift */,
-EFC9E6D40B5341DAB0356EE7 /* ExportPreferences.swift */,
-EA5E584E2E7D432A9905C2A5 /* MatchMetadata.swift */,
-6A525EF9BC684FD9AE4A8042 /* MatchNote.swift */,
-A9BED926452F4E4CA1015936 /* Project.swift */,
-E9687B036C4A4ACAA4F92DFD /* ScoreEvent.swift */,
-51822CD754854C4A89D4F0ED /* ScoreReducer.swift */,
-F0D64951F4FC43229E10064B /* ScoreState.swift */,
-);
-name = Models;
-sourceTree = "<group>";
-};
-A09B32B9906B410B9E67D931 /* Persistence */ = {
-isa = PBXGroup;
-children = (
-7943005063E147A7AE21891E /* BookmarkResolver.swift */,
-);
-name = Persistence;
-sourceTree = "<group>";
-};
-5FF551676D144B588C0C4BE0 /* Utilities */ = {
-isa = PBXGroup;
-children = (
-EF8F44476B2B4A55BF6DBABA /* HapticsManager.swift */,
-2E8F5AAC233047D88F95ECC8 /* LayoutAdapter.swift */,
-7A8DBCE8282A464A88E2EF67 /* TimeFormatter.swift */,
-);
-name = Utilities;
-sourceTree = "<group>";
-};
-3BCEC4F40211418D98D2B158 /* ViewModels */ = {
-isa = PBXGroup;
-children = (
-8107A0BDD98741DEB66619CD /* PlayerViewModel.swift */,
-B487C3E7573D4B69B59DE0C5 /* ProjectStore.swift */,
-FFD78C59C1BA4DF6A0A1EE3B /* TimelineViewModel.swift */,
-B2F924ADE9F64BB68FD203EF /* ExportViewModel.swift */,
-);
-name = ViewModels;
-sourceTree = "<group>";
-};
-BF2A32B346FE42A799C7FC46 /* Views */ = {
-isa = PBXGroup;
-children = (
-C5C9E2D160EC4F3FB3B59C72 /* ContentView.swift */,
-080B1C26739F4AE8B9AFE147 /* ControlsView.swift */,
-0265B6EBC49040E3BE611527 /* EventEditView.swift */,
-DEBDEF18AB4F44F8872A4903 /* EventHistoryView.swift */,
-955FF5994BD345FA8AF2324A /* ExportSettingsView.swift */,
-E2DA0BC3306946189356ADB9 /* MetadataView.swift */,
-0DB0D6286729493B891C6D83 /* NotesView.swift */,
-2D9CEE1029044D069CCF74A7 /* ScoreOverlayView.swift */,
-4D363ACD1D294E499509BABA /* VideoPlayerView.swift */,
-);
-name = Views;
-sourceTree = "<group>";
-};
-88E2E5E2429F4B8D9C11757C /* BJJScoreTracker */ = {
-isa = PBXGroup;
-children = (
-6F7E29BC4038470EAE5DFB58 /* Assets.xcassets */,
-73CE2BD3D229457EB002C431 /* Preview Content */,
-DC6EB3F1133745F494373A34 /* Info.plist */,
-);
-path = BJJScoreTracker;
-sourceTree = "<group>";
-};
-73CE2BD3D229457EB002C431 /* Preview Content */ = {
-isa = PBXGroup;
-children = (
-86EB15A7C5CE4406AFD0F43E /* Preview Assets.xcassets */,
-);
-path = "Preview Content";
-sourceTree = "<group>";
-};
-5915283BA22F4B11ACF43822 /* Products */ = {
-isa = PBXGroup;
-children = (
-809C580EB1504C7BB59BA46C /* BJJScoreTracker.app */,
-);
-name = Products;
-sourceTree = "<group>";
-};
+		3BCEC4F40211418D98D2B158 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				8107A0BDD98741DEB66619CD /* PlayerViewModel.swift */,
+				B487C3E7573D4B69B59DE0C5 /* ProjectStore.swift */,
+				FFD78C59C1BA4DF6A0A1EE3B /* TimelineViewModel.swift */,
+				B2F924ADE9F64BB68FD203EF /* ExportViewModel.swift */,
+			);
+			name = ViewModels;
+			sourceTree = "<group>";
+		};
+		5915283BA22F4B11ACF43822 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				809C580EB1504C7BB59BA46C /* BJJScoreTracker.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5FF551676D144B588C0C4BE0 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				EF8F44476B2B4A55BF6DBABA /* HapticsManager.swift */,
+				2E8F5AAC233047D88F95ECC8 /* LayoutAdapter.swift */,
+				7A8DBCE8282A464A88E2EF67 /* TimeFormatter.swift */,
+			);
+			name = Utilities;
+			sourceTree = "<group>";
+		};
+		67BA9008EADA418DB07EBF92 = {
+			isa = PBXGroup;
+			children = (
+				9F174D0E4FD14DAC8C764843 /* BJJScoreTrackerApp.swift */,
+				D22F5EF9794B450B9FC75DEB /* Export */,
+				EC5AB3C1258D4117981F4307 /* Models */,
+				A09B32B9906B410B9E67D931 /* Persistence */,
+				5FF551676D144B588C0C4BE0 /* Utilities */,
+				3BCEC4F40211418D98D2B158 /* ViewModels */,
+				BF2A32B346FE42A799C7FC46 /* Views */,
+				88E2E5E2429F4B8D9C11757C /* BJJScoreTracker */,
+				5915283BA22F4B11ACF43822 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		73CE2BD3D229457EB002C431 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				86EB15A7C5CE4406AFD0F43E /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		88E2E5E2429F4B8D9C11757C /* BJJScoreTracker */ = {
+			isa = PBXGroup;
+			children = (
+				6F7E29BC4038470EAE5DFB58 /* Assets.xcassets */,
+				73CE2BD3D229457EB002C431 /* Preview Content */,
+				DC6EB3F1133745F494373A34 /* Info.plist */,
+			);
+			path = BJJScoreTracker;
+			sourceTree = "<group>";
+		};
+		A09B32B9906B410B9E67D931 /* Persistence */ = {
+			isa = PBXGroup;
+			children = (
+				7943005063E147A7AE21891E /* BookmarkResolver.swift */,
+			);
+			name = Persistence;
+			sourceTree = "<group>";
+		};
+		BF2A32B346FE42A799C7FC46 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C5C9E2D160EC4F3FB3B59C72 /* ContentView.swift */,
+				080B1C26739F4AE8B9AFE147 /* ControlsView.swift */,
+				0265B6EBC49040E3BE611527 /* EventEditView.swift */,
+				DEBDEF18AB4F44F8872A4903 /* EventHistoryView.swift */,
+				955FF5994BD345FA8AF2324A /* ExportSettingsView.swift */,
+				E2DA0BC3306946189356ADB9 /* MetadataView.swift */,
+				0DB0D6286729493B891C6D83 /* NotesView.swift */,
+				2D9CEE1029044D069CCF74A7 /* ScoreOverlayView.swift */,
+				4D363ACD1D294E499509BABA /* VideoPlayerView.swift */,
+			);
+			name = Views;
+			sourceTree = "<group>";
+		};
+		D22F5EF9794B450B9FC75DEB /* Export */ = {
+			isa = PBXGroup;
+			children = (
+				B23947F661464DBC9FEDEBE9 /* CompositionBuilder.swift */,
+				3F1257FC4C6644FAB0AAB58F /* OverlayRenderer.swift */,
+			);
+			name = Export;
+			sourceTree = "<group>";
+		};
+		EC5AB3C1258D4117981F4307 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				5B5ED783EF254404A3BCE58F /* Competitor.swift */,
+				EFC9E6D40B5341DAB0356EE7 /* ExportPreferences.swift */,
+				EA5E584E2E7D432A9905C2A5 /* MatchMetadata.swift */,
+				6A525EF9BC684FD9AE4A8042 /* MatchNote.swift */,
+				A9BED926452F4E4CA1015936 /* Project.swift */,
+				E9687B036C4A4ACAA4F92DFD /* ScoreEvent.swift */,
+				51822CD754854C4A89D4F0ED /* ScoreReducer.swift */,
+				F0D64951F4FC43229E10064B /* ScoreState.swift */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-B5149E7BFD8B4F0592B6BD89 /* BJJScoreTracker */ = {
-isa = PBXNativeTarget;
-buildConfigurationList = 9AEEE53E4EFF4BEBA88C8A86 /* Build configuration list for PBXNativeTarget "BJJScoreTracker" */;
-buildPhases = (
-E0F58A9151EB4B44A0D7A8FD /* Sources */,
-9457B2D4D5E6423B8D7671A7 /* Frameworks */,
-1E8859143910405DB80F6745 /* Resources */,
-);
-buildRules = (
-);
-dependencies = (
-);
-name = BJJScoreTracker;
-productName = BJJScoreTracker;
-productReference = 809C580EB1504C7BB59BA46C /* BJJScoreTracker.app */;
-productType = "com.apple.product-type.application";
-};
+		B5149E7BFD8B4F0592B6BD89 /* BJJScoreTracker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9AEEE53E4EFF4BEBA88C8A86 /* Build configuration list for PBXNativeTarget "BJJScoreTracker" */;
+			buildPhases = (
+				E0F58A9151EB4B44A0D7A8FD /* Sources */,
+				9457B2D4D5E6423B8D7671A7 /* Frameworks */,
+				1E8859143910405DB80F6745 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BJJScoreTracker;
+			productName = BJJScoreTracker;
+			productReference = 809C580EB1504C7BB59BA46C /* BJJScoreTracker.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-66A56E35C7604572AECD30EA /* Project object */ = {
-isa = PBXProject;
-attributes = {
-BuildIndependentTargetsInParallel = 1;
-LastSwiftUpdateCheck = 1500;
-LastUpgradeCheck = 1500;
-TargetAttributes = {
-B5149E7BFD8B4F0592B6BD89 = {
-CreatedOnToolsVersion = 15.0;
-};
-};
-};
-buildConfigurationList = 399B6AA0C6E2483CA34ED315 /* Build configuration list for PBXProject "BJJScoreTracker" */;
-compatibilityVersion = "Xcode 14.0";
-developmentRegion = en;
-hasScannedForEncodings = 0;
-knownRegions = (
-en,
-);
-mainGroup = 67BA9008EADA418DB07EBF92;
-productRefGroup = 5915283BA22F4B11ACF43822 /* Products */;
-projectDirPath = "";
-projectRoot = "";
-targets = (
-B5149E7BFD8B4F0592B6BD89 /* BJJScoreTracker */,
-);
-};
+		66A56E35C7604572AECD30EA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1500;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					B5149E7BFD8B4F0592B6BD89 = {
+						CreatedOnToolsVersion = 15.0;
+					};
+				};
+			};
+			buildConfigurationList = 399B6AA0C6E2483CA34ED315 /* Build configuration list for PBXProject "BJJScoreTracker" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 67BA9008EADA418DB07EBF92;
+			productRefGroup = 5915283BA22F4B11ACF43822 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B5149E7BFD8B4F0592B6BD89 /* BJJScoreTracker */,
+			);
+		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-1E8859143910405DB80F6745 /* Resources */ = {
-isa = PBXResourcesBuildPhase;
-buildActionMask = 2147483647;
-files = (
-FCA907237A764B4AB08A733D /* Preview Assets.xcassets in Resources */,
-19B9E18FE65C4493A6E80AA5 /* Assets.xcassets in Resources */,
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
+		1E8859143910405DB80F6745 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FCA907237A764B4AB08A733D /* Preview Assets.xcassets in Resources */,
+				19B9E18FE65C4493A6E80AA5 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-E0F58A9151EB4B44A0D7A8FD /* Sources */ = {
-isa = PBXSourcesBuildPhase;
-buildActionMask = 2147483647;
-files = (
-CF4DD0C32F794818BB8D05CA /* CompositionBuilder.swift in Sources */,
-E61C5F94065947D8BB93152E /* HapticsManager.swift in Sources */,
-0A996852543B471EAE42E343 /* TimelineViewModel.swift in Sources */,
-62AF19C1D78E438CA96023E6 /* ExportSettingsView.swift in Sources */,
-224D11504C91495FBBE94B09 /* OverlayRenderer.swift in Sources */,
-0EB05B976C6543DBA61C794A /* ScoreReducer.swift in Sources */,
-3DA55CA79E8C481986A44845 /* ScoreState.swift in Sources */,
-6A5F72609F5C4D588572D44B /* ContentView.swift in Sources */,
-B82EB5AC22354E3C8AD44A61 /* PlayerViewModel.swift in Sources */,
-1859FE59E72B4BF09BB18EE9 /* ExportPreferences.swift in Sources */,
-A1A3A1668AEA4BE9A8F1A0C1 /* MetadataView.swift in Sources */,
-ADD6CE18842F479694107A76 /* ScoreOverlayView.swift in Sources */,
-B29D0B3C864C43269E348C11 /* BJJScoreTrackerApp.swift in Sources */,
-44854042D14F4167BEF5DC85 /* EventHistoryView.swift in Sources */,
-A0ADC79DFCC74E71ACAF7EC8 /* MatchMetadata.swift in Sources */,
-769D9CFFFA534D15A0D84BBC /* NotesView.swift in Sources */,
-68A0ADC170C0407E9C36C595 /* EventEditView.swift in Sources */,
-56ECD84CA540458AB9FA35AC /* MatchNote.swift in Sources */,
-906B3C1891004B23A609F074 /* ControlsView.swift in Sources */,
-821C175B5A5D481BAB517D70 /* ProjectStore.swift in Sources */,
-6B463307B2F14F0BB7B14B86 /* LayoutAdapter.swift in Sources */,
-F64AB0B59C3F4665B17F1B42 /* VideoPlayerView.swift in Sources */,
-C6CBE14B301648CEA26E32A0 /* ScoreEvent.swift in Sources */,
-CB98D7C1B16B447C86104365 /* BookmarkResolver.swift in Sources */,
-ACF8B9CBA273426188BC37AE /* ExportViewModel.swift in Sources */,
-F94711D822454A3D95821AA4 /* Project.swift in Sources */,
-1118E37045BD4DB7A6764451 /* TimeFormatter.swift in Sources */,
-E042BB050A3C46BC8DF09D3E /* Competitor.swift in Sources */,
-);
-runOnlyForDeploymentPostprocessing = 0;
-};
+		E0F58A9151EB4B44A0D7A8FD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CF4DD0C32F794818BB8D05CA /* CompositionBuilder.swift in Sources */,
+				E61C5F94065947D8BB93152E /* HapticsManager.swift in Sources */,
+				0A996852543B471EAE42E343 /* TimelineViewModel.swift in Sources */,
+				62AF19C1D78E438CA96023E6 /* ExportSettingsView.swift in Sources */,
+				224D11504C91495FBBE94B09 /* OverlayRenderer.swift in Sources */,
+				0EB05B976C6543DBA61C794A /* ScoreReducer.swift in Sources */,
+				3DA55CA79E8C481986A44845 /* ScoreState.swift in Sources */,
+				6A5F72609F5C4D588572D44B /* ContentView.swift in Sources */,
+				B82EB5AC22354E3C8AD44A61 /* PlayerViewModel.swift in Sources */,
+				1859FE59E72B4BF09BB18EE9 /* ExportPreferences.swift in Sources */,
+				A1A3A1668AEA4BE9A8F1A0C1 /* MetadataView.swift in Sources */,
+				ADD6CE18842F479694107A76 /* ScoreOverlayView.swift in Sources */,
+				B29D0B3C864C43269E348C11 /* BJJScoreTrackerApp.swift in Sources */,
+				44854042D14F4167BEF5DC85 /* EventHistoryView.swift in Sources */,
+				A0ADC79DFCC74E71ACAF7EC8 /* MatchMetadata.swift in Sources */,
+				769D9CFFFA534D15A0D84BBC /* NotesView.swift in Sources */,
+				68A0ADC170C0407E9C36C595 /* EventEditView.swift in Sources */,
+				56ECD84CA540458AB9FA35AC /* MatchNote.swift in Sources */,
+				906B3C1891004B23A609F074 /* ControlsView.swift in Sources */,
+				821C175B5A5D481BAB517D70 /* ProjectStore.swift in Sources */,
+				6B463307B2F14F0BB7B14B86 /* LayoutAdapter.swift in Sources */,
+				F64AB0B59C3F4665B17F1B42 /* VideoPlayerView.swift in Sources */,
+				C6CBE14B301648CEA26E32A0 /* ScoreEvent.swift in Sources */,
+				CB98D7C1B16B447C86104365 /* BookmarkResolver.swift in Sources */,
+				ACF8B9CBA273426188BC37AE /* ExportViewModel.swift in Sources */,
+				F94711D822454A3D95821AA4 /* Project.swift in Sources */,
+				1118E37045BD4DB7A6764451 /* TimeFormatter.swift in Sources */,
+				E042BB050A3C46BC8DF09D3E /* Competitor.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-B3D4DB0EF3064E19BD19D64C /* Debug */ = {
-isa = XCBuildConfiguration;
-buildSettings = {
-ALWAYS_SEARCH_USER_PATHS = NO;
-CLANG_ANALYZER_NONNULL = YES;
-CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-CLANG_ENABLE_MODULES = YES;
-CLANG_ENABLE_OBJC_ARC = YES;
-CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-CLANG_WARN_BOOL_CONVERSION = YES;
-CLANG_WARN_COMMA = YES;
-CLANG_WARN_CONSTANT_CONVERSION = YES;
-CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-CLANG_WARN_EMPTY_BODY = YES;
-CLANG_WARN_ENUM_CONVERSION = YES;
-CLANG_WARN_INFINITE_RECURSION = YES;
-CLANG_WARN_INT_CONVERSION = YES;
-CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-CLANG_WARN_STRICT_PROTOTYPES = YES;
-CLANG_WARN_SUSPICIOUS_MOVE = YES;
-CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-CLANG_WARN_UNREACHABLE_CODE = YES;
-CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-COPY_PHASE_STRIP = NO;
-DEBUG_INFORMATION_FORMAT = dwarf;
-ENABLE_STRICT_OBJC_MSGSEND = YES;
-ENABLE_TESTABILITY = YES;
-GCC_C_LANGUAGE_STANDARD = gnu17;
-GCC_DYNAMIC_NO_PIC = NO;
-GCC_NO_COMMON_BLOCKS = YES;
-GCC_OPTIMIZATION_LEVEL = 0;
-GCC_PREPROCESSOR_DEFINITIONS = (
-"DEBUG=1",
-"$(inherited)",
-);
-GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-GCC_WARN_UNDECLARED_SELECTOR = YES;
-GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-GCC_WARN_UNUSED_FUNCTION = YES;
-GCC_WARN_UNUSED_VARIABLE = YES;
-IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-ONLY_ACTIVE_ARCH = YES;
-SDKROOT = iphoneos;
-SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
-SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-};
-name = Debug;
-};
-C9720F34B3FE4898BAC8D45F /* Release */ = {
-isa = XCBuildConfiguration;
-buildSettings = {
-ALWAYS_SEARCH_USER_PATHS = NO;
-CLANG_ANALYZER_NONNULL = YES;
-CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-CLANG_ENABLE_MODULES = YES;
-CLANG_ENABLE_OBJC_ARC = YES;
-CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-CLANG_WARN_BOOL_CONVERSION = YES;
-CLANG_WARN_COMMA = YES;
-CLANG_WARN_CONSTANT_CONVERSION = YES;
-CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-CLANG_WARN_EMPTY_BODY = YES;
-CLANG_WARN_ENUM_CONVERSION = YES;
-CLANG_WARN_INFINITE_RECURSION = YES;
-CLANG_WARN_INT_CONVERSION = YES;
-CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-CLANG_WARN_STRICT_PROTOTYPES = YES;
-CLANG_WARN_SUSPICIOUS_MOVE = YES;
-CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-CLANG_WARN_UNREACHABLE_CODE = YES;
-CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-COPY_PHASE_STRIP = NO;
-DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-ENABLE_NS_ASSERTIONS = NO;
-ENABLE_STRICT_OBJC_MSGSEND = YES;
-GCC_C_LANGUAGE_STANDARD = gnu17;
-GCC_NO_COMMON_BLOCKS = YES;
-GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-GCC_WARN_UNDECLARED_SELECTOR = YES;
-GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-GCC_WARN_UNUSED_FUNCTION = YES;
-GCC_WARN_UNUSED_VARIABLE = YES;
-IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-MTL_ENABLE_DEBUG_INFO = NO;
-SDKROOT = iphoneos;
-SWIFT_COMPILATION_MODE = wholemodule;
-SWIFT_OPTIMIZATION_LEVEL = "-O";
-};
-name = Release;
-};
-ACC1032435F14884813E97BD /* Debug */ = {
-isa = XCBuildConfiguration;
-buildSettings = {
-ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-CODE_SIGN_STYLE = Automatic;
-CURRENT_PROJECT_VERSION = 1;
-DEVELOPMENT_TEAM = "";
-GENERATE_INFOPLIST_FILE = NO;
-INFOPLIST_FILE = BJJScoreTracker/Info.plist;
-IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-MARKETING_VERSION = 1.0;
-PRODUCT_BUNDLE_IDENTIFIER = com.anthonycangemi.BJJScoreTracker;
-PRODUCT_NAME = "$(TARGET_NAME)";
-SDKROOT = iphoneos;
-SUPPORTS_MACCATALYST = NO;
-SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-TARGETED_DEVICE_FAMILY = "1,2";
-SWIFT_VERSION = 5.0;
-};
-name = Debug;
-};
-F1C4DB4B6E20426F8FB4ACA9 /* Release */ = {
-isa = XCBuildConfiguration;
-buildSettings = {
-ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-CODE_SIGN_STYLE = Automatic;
-CURRENT_PROJECT_VERSION = 1;
-DEVELOPMENT_TEAM = "";
-GENERATE_INFOPLIST_FILE = NO;
-INFOPLIST_FILE = BJJScoreTracker/Info.plist;
-IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-MARKETING_VERSION = 1.0;
-PRODUCT_BUNDLE_IDENTIFIER = com.anthonycangemi.BJJScoreTracker;
-PRODUCT_NAME = "$(TARGET_NAME)";
-SDKROOT = iphoneos;
-SUPPORTS_MACCATALYST = NO;
-SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
-TARGETED_DEVICE_FAMILY = "1,2";
-SWIFT_VERSION = 5.0;
-};
-name = Release;
-};
+		ACC1032435F14884813E97BD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BJJScoreTracker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anthonycangemi.BJJScoreTracker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B3D4DB0EF3064E19BD19D64C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C9720F34B3FE4898BAC8D45F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		F1C4DB4B6E20426F8FB4ACA9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = "";
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = BJJScoreTracker/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.anthonycangemi.BJJScoreTracker;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-399B6AA0C6E2483CA34ED315 /* Build configuration list for PBXProject "BJJScoreTracker" */ = {
-isa = XCConfigurationList;
-buildConfigurations = (
-B3D4DB0EF3064E19BD19D64C /* Debug */,
-C9720F34B3FE4898BAC8D45F /* Release */,
-);
-defaultConfigurationIsVisible = 0;
-defaultConfigurationName = Debug;
-};
-9AEEE53E4EFF4BEBA88C8A86 /* Build configuration list for PBXNativeTarget "BJJScoreTracker" */ = {
-isa = XCConfigurationList;
-buildConfigurations = (
-ACC1032435F14884813E97BD /* Debug */,
-F1C4DB4B6E20426F8FB4ACA9 /* Release */,
-);
-defaultConfigurationIsVisible = 0;
-defaultConfigurationName = Debug;
-};
+		399B6AA0C6E2483CA34ED315 /* Build configuration list for PBXProject "BJJScoreTracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B3D4DB0EF3064E19BD19D64C /* Debug */,
+				C9720F34B3FE4898BAC8D45F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9AEEE53E4EFF4BEBA88C8A86 /* Build configuration list for PBXNativeTarget "BJJScoreTracker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ACC1032435F14884813E97BD /* Debug */,
+				F1C4DB4B6E20426F8FB4ACA9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 /* End XCConfigurationList section */
-
-};
-rootObject = 66A56E35C7604572AECD30EA /* Project object */;
+	};
+	rootObject = 66A56E35C7604572AECD30EA /* Project object */;
 }

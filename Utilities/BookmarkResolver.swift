@@ -1,21 +1,20 @@
 import Foundation
 
-/// A safe cross-platform bookmark resolver.
-/// On macOS, it uses security-scoped URLs; on iOS, it’s a simple URL decoder.
+/// A no-op iOS version of BookmarkResolver.
+/// On macOS, this would handle persistent bookmarks with security-scoped URLs.
+/// On iOS, sandboxed access makes that unnecessary, so this version just returns the URL directly.
 struct BookmarkResolver {
 
-    /// Reconstructs a file URL from bookmark data.
     static func resolveBookmark(from data: Data) -> URL? {
-        var isStale = false
-        return try? URL(resolvingBookmarkData: data, bookmarkDataIsStale: &isStale)
+        // On macOS, you'd use startAccessingSecurityScopedResource here.
+        // On iOS, we simply decode and return the URL.
+        return try? URL(resolvingBookmarkData: data, bookmarkDataIsStale: nil)
     }
 
-    /// Creates bookmark data from a URL.
     static func bookmark(for url: URL) -> Data? {
         return try? url.bookmarkData()
     }
 
-    /// Resolves bookmark data and performs an operation on the resolved URL.
     static func withResolvedBookmark<T>(_ data: Data, perform block: (URL) throws -> T) rethrows -> T? {
         guard let url = resolveBookmark(from: data) else { return nil }
         return try? block(url)
@@ -31,3 +30,4 @@ extension URL {
     }
 }
 #endif
+
