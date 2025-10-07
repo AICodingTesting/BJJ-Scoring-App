@@ -1,13 +1,35 @@
 import Foundation
+import Dispatch
 
 /// A safe cross-platform bookmark resolver.
 /// On macOS, it uses security-scoped URLs; on iOS, it’s a simple URL decoder.
 struct BookmarkResolver {
 
+    struct ResolvedBookmark {
+        let url: URL
+        let isStale: Bool
+    }
+
+    enum Error: Swift.Error {
+        case failedToResolveBookmark
+    }
+
     /// Reconstructs a file URL from bookmark data.
-    static func resolveBookmark(from data: Data) -> URL? {
-        var isStale = false
-        return try? URL(resolvingBookmarkData: data, bookmarkDataIsStale: &isStale)
+    static func resolveBookmark(from data: Data) async throws -> ResolvedBookmark {
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                var isStale = false
+                do {
+                    let url = try URL(
+                        resolvingBookmarkData: data,
+                        bookmarkDataIsStale: &isStale
+                    )
+                    continuation.resume(returning: ResolvedBookmark(url: url, isStale: isStale))
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
     /// Creates bookmark data from a URL.
@@ -16,9 +38,9 @@ struct BookmarkResolver {
     }
 
     /// Resolves bookmark data and performs an operation on the resolved URL.
-    static func withResolvedBookmark<T>(_ data: Data, perform block: (URL) throws -> T) rethrows -> T? {
-        guard let url = resolveBookmark(from: data) else { return nil }
-        return try? block(url)
+    static func withResolvedBookmark<T>(_ data: Data, perform block: (URL) throws -> T) async rethrows -> T? {
+        let resolved = try await resolveBookmark(from: data)
+        return try? block(resolved.url)
     }
 }
 

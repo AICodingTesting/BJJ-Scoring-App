@@ -1,11 +1,36 @@
 import Foundation
 import AVFoundation
+import Dispatch
 
+protocol VideoExportSession: AnyObject {
+    var status: AVAssetExportSession.Status { get }
+    var progress: Float { get }
+    var outputURL: URL? { get set }
+    var outputFileType: AVFileType? { get set }
+    var error: Error? { get }
+    func exportAsynchronously(completionHandler handler: @escaping () -> Void)
+    func cancelExport()
+}
+
+extension AVAssetExportSession: VideoExportSession {}
 extension AVAssetExportSession: @unchecked Sendable {}
 
 /// ViewModel responsible for exporting video assets asynchronously.
 @MainActor
 final class ExportViewModel: ObservableObject {
+    typealias BookmarkRefreshHandler = (Project, Data) -> Void
+
+    enum ExportError: LocalizedError {
+        case missingVideoBookmark
+
+        var errorDescription: String? {
+            switch self {
+            case .missingVideoBookmark:
+                return "No video bookmark available for export."
+            }
+        }
+    }
+
     /// Progress of the export operation, ranging from 0.0 to 1.0.
     @Published var exportProgress: Double = 0.0
     /// Indicates whether an export operation is currently in progress.
@@ -17,8 +42,22 @@ final class ExportViewModel: ObservableObject {
     /// Error encountered during export, if any.
     @Published var exportError: Error?
 
-    private var exporter: AVAssetExportSession?
+    private let resolveBookmark: (Data) async throws -> BookmarkResolver.ResolvedBookmark
+    private let bookmarkCreator: (URL) -> Data?
+    private let exportSessionFactory: (AVAsset) async -> VideoExportSession?
+
+    private var exporter: VideoExportSession?
     private var progressTask: Task<Void, Never>?
+
+    init(
+        resolveBookmark: @escaping (Data) async throws -> BookmarkResolver.ResolvedBookmark = BookmarkResolver.resolveBookmark(from:),
+        bookmarkCreator: @escaping (URL) -> Data? = BookmarkResolver.bookmark(for:),
+        exportSessionFactory: @escaping (AVAsset) async -> VideoExportSession? = ExportViewModel.defaultExportSessionFactory
+    ) {
+        self.resolveBookmark = resolveBookmark
+        self.bookmarkCreator = bookmarkCreator
+        self.exportSessionFactory = exportSessionFactory
+    }
 
     /// Cleans up any ongoing export tasks when the ViewModel is deinitialized.
     deinit {
@@ -38,9 +77,10 @@ final class ExportViewModel: ObservableObject {
     }
 
     /// Starts exporting the video from the given project asynchronously.
-    /// - Parameter project: The project containing the video bookmark to export.
-    @discardableResult
-    func startExport(from project: Project) async {
+    /// - Parameters:
+    ///   - project: The project containing the video bookmark to export.
+    ///   - refreshBookmark: Optional handler invoked when the resolved bookmark is reported as stale.
+    func startExport(from project: Project, refreshBookmark: BookmarkRefreshHandler? = nil) async {
         guard !isExporting else { return }
 
         exportProgress = 0.0
@@ -48,26 +88,23 @@ final class ExportViewModel: ObservableObject {
         exportCompleted = false
         exportError = nil
 
+        guard let bookmarkData = project.videoBookmark else {
+            exportError = ExportError.missingVideoBookmark
+            isExporting = false
+            return
+        }
+
         do {
-            let videoURL: URL
-            do {
-                videoURL = try await BookmarkResolver.resolveBookmark(project.videoBookmark)
-            } catch {
-                exportError = error
-                isExporting = false
-                return
+            let resolvedBookmark = try await resolveBookmark(bookmarkData)
+            let videoURL = resolvedBookmark.url
+
+            if resolvedBookmark.isStale {
+                scheduleBookmarkRefresh(for: project, resolvedURL: videoURL, handler: refreshBookmark)
             }
 
             let asset = AVAsset(url: videoURL)
 
-            let exportSession = await withCheckedContinuation { continuation in
-                DispatchQueue.global(qos: .userInitiated).async {
-                    let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
-                    continuation.resume(returning: session)
-                }
-            }
-
-            guard let exportSession else {
+            guard let exportSession = await exportSessionFactory(asset) else {
                 exportError = NSError(domain: "ExportViewModel", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to create export session."])
                 isExporting = false
                 return
@@ -111,10 +148,10 @@ final class ExportViewModel: ObservableObject {
             }
 
             progressTask?.cancel()
-            progressTask = Task { [weak self] in
+            progressTask = Task { [weak self, weak exportSession] in
                 guard let self = self else { return }
                 do {
-                    while let exportSession = exportSession, exportSession.status == .exporting {
+                    while let exportSession, exportSession.status == .exporting {
                         try Task.checkCancellation()
                         try await Task.sleep(nanoseconds: 200_000_000)
                         await MainActor.run {
@@ -149,4 +186,24 @@ final class ExportViewModel: ObservableObject {
             self.resetState()
         }
     }
-} 
+
+    private func scheduleBookmarkRefresh(for project: Project, resolvedURL: URL, handler: BookmarkRefreshHandler?) {
+        guard let handler else { return }
+        let bookmarkCreator = bookmarkCreator
+        DispatchQueue.global(qos: .utility).async {
+            guard let refreshedBookmark = bookmarkCreator(resolvedURL) else { return }
+            DispatchQueue.main.async {
+                handler(project, refreshedBookmark)
+            }
+        }
+    }
+
+    private static func defaultExportSessionFactory(for asset: AVAsset) async -> VideoExportSession? {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
+                continuation.resume(returning: session)
+            }
+        }
+    }
+}
