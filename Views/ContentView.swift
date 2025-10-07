@@ -15,7 +15,12 @@ struct ContentView: View {
 
             Button("Start Export") {
                 Task {
-                    await exportViewModel.startExport(from: projectStore.currentProject)
+                    await exportViewModel.startExport(from: projectStore.currentProject) { project, bookmarkData in
+                        var updatedProject = project
+                        updatedProject.videoBookmark = bookmarkData
+                        updatedProject.updatedAt = Date()
+                        projectStore.update(updatedProject)
+                    }
                 }
             }
             .buttonStyle(.borderedProminent)

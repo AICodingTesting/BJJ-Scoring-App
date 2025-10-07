@@ -1,23 +1,36 @@
 import Foundation
+import Dispatch
 
 /// A no-op iOS version of BookmarkResolver.
 /// On macOS, this would handle persistent bookmarks with security-scoped URLs.
 /// On iOS, sandboxed access makes that unnecessary, so this version just returns the URL directly.
 struct BookmarkResolver {
 
-    static func resolveBookmark(from data: Data) -> URL? {
-        // On macOS, you'd use startAccessingSecurityScopedResource here.
-        // On iOS, we simply decode and return the URL.
-        return try? URL(resolvingBookmarkData: data, bookmarkDataIsStale: nil)
+    struct ResolvedBookmark {
+        let url: URL
+        let isStale: Bool
+    }
+
+    static func resolveBookmark(from data: Data) async throws -> ResolvedBookmark {
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    let url = try URL(resolvingBookmarkData: data, bookmarkDataIsStale: nil)
+                    continuation.resume(returning: ResolvedBookmark(url: url, isStale: false))
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
     static func bookmark(for url: URL) -> Data? {
         return try? url.bookmarkData()
     }
 
-    static func withResolvedBookmark<T>(_ data: Data, perform block: (URL) throws -> T) rethrows -> T? {
-        guard let url = resolveBookmark(from: data) else { return nil }
-        return try? block(url)
+    static func withResolvedBookmark<T>(_ data: Data, perform block: (URL) throws -> T) async rethrows -> T? {
+        let resolved = try await resolveBookmark(from: data)
+        return try? block(resolved.url)
     }
 }
 
