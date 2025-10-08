@@ -2,11 +2,13 @@ import SwiftUI
 
 struct EventEditView: View {
     @State private var workingEvent: ScoreEvent
+    var duration: Double
     var onSave: (ScoreEvent) -> Void
     var onCancel: () -> Void
 
-    init(event: ScoreEvent, onSave: @escaping (ScoreEvent) -> Void, onCancel: @escaping () -> Void) {
+    init(event: ScoreEvent, duration: Double = 0, onSave: @escaping (ScoreEvent) -> Void, onCancel: @escaping () -> Void) {
         _workingEvent = State(initialValue: event)
+        self.duration = duration
         self.onSave = onSave
         self.onCancel = onCancel
     }
@@ -33,7 +35,7 @@ struct EventEditView: View {
                     }
                 }
                 Section(header: Text("Timestamp")) {
-                    Slider(value: $workingEvent.timestamp, in: 0...max(workingEvent.timestamp, 0) + 600, step: 0.1)
+                    Slider(value: $workingEvent.timestamp, in: 0...sliderUpperBound, step: 0.1)
                     Text(TimeFormatter.string(from: workingEvent.timestamp))
                         .font(.headline.monospacedDigit())
                 }
@@ -94,6 +96,14 @@ struct EventEditView: View {
                 }
             }
         )
+    }
+
+    private var sliderUpperBound: Double {
+        let buffer: Double = 5
+        if duration > 0 {
+            return max(duration, workingEvent.timestamp) + buffer
+        }
+        return max(workingEvent.timestamp + buffer, 10)
     }
 
     private enum ActionType: String, CaseIterable, Identifiable {
