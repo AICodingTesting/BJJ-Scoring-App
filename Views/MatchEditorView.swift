@@ -27,8 +27,6 @@ struct MatchEditorView: View {
                 header
                 videoSection
                 timelineSection
-                ControlsView(onScore: handleScore(_:action:), onUndo: handleUndo, onRedo: handleRedo)
-                    .disabled(!playerViewModel.isReady || isSelectionInProgress || exportViewModel.isExporting)
                 adaptiveInfoStack
                 EventHistoryView(events: timelineViewModel.events, onEdit: beginEditing(_:), onDelete: deleteEvent(_:))
                     .disabled(!playerViewModel.isReady)
@@ -38,6 +36,9 @@ struct MatchEditorView: View {
             .padding(.bottom, 32)
         }
         .background(Color(.systemGroupedBackground).ignoresSafeArea())
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            controlsInset
+        }
         .onAppear(perform: prepareView)
         .onChange(of: project.id) { _ in prepareView(forceReconfigure: true) }
         .onChange(of: project.videoBookmark) { _ in prepareView(forceReconfigure: true) }
@@ -221,6 +222,50 @@ struct MatchEditorView: View {
                 .frame(maxWidth: .infinity)
             NotesView(notes: timelineViewModel.notes, onAdd: addNote(_:), onDelete: removeNote(_:))
                 .frame(maxWidth: .infinity)
+        }
+    }
+
+    private var controlsInset: some View {
+        VStack(spacing: 12) {
+            if !playerViewModel.isReady {
+                Text("Select a video to enable scoring controls.")
+                    .font(.footnote)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity)
+            }
+
+            ControlsView(
+                showsCardBackground: false,
+                onScore: handleScore(_:action:),
+                onUndo: handleUndo,
+                onRedo: handleRedo
+            )
+            .disabled(!playerViewModel.isReady || isSelectionInProgress || exportViewModel.isExporting)
+            .opacity(playerViewModel.isReady ? 1 : 0.35)
+            .background(
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(Color(.systemBackground).opacity(0.92))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .stroke(Color.white.opacity(0.15))
+                    )
+                    .shadow(color: Color.black.opacity(0.18), radius: 24, y: 12)
+            )
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 16)
+        .padding(.bottom, 20)
+        .frame(maxWidth: .infinity)
+        .background(
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .ignoresSafeArea(edges: .bottom)
+        )
+        .overlay(alignment: .top) {
+            Divider()
+                .blendMode(.overlay)
+                .opacity(0.6)
         }
     }
 
