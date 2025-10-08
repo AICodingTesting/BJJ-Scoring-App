@@ -1,4 +1,4 @@
-import SwiftUI
+@preconcurrency import SwiftUI
 import PhotosUI
 
 @MainActor
@@ -16,19 +16,7 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                Group {
-                    if projectStore.currentProject.videoBookmark == nil && !isProcessingSelection {
-                        emptyState
-                    } else {
-                        MatchEditorView(
-                            isSelectionInProgress: isProcessingSelection,
-                            onRequestExport: {
-                                Task { @MainActor in await startExport() }
-                            }
-                        )
-                    }
-                }
-
+                mainContent
                 if isProcessingSelection {
                     selectionOverlay
                 }
@@ -42,7 +30,17 @@ struct ContentView: View {
                         photoLibrary: .shared()
                     ) {
                         Label(
-                            isProcessingSelection ? "Loading..." : (projectStore.currentProject.videoBookmark == nil ? "Select Video" : "Change Video"),
+                            {
+                                let loadingText: String
+                                if isProcessingSelection {
+                                    loadingText = "Loading..."
+                                } else if projectStore.currentProject.videoBookmark == nil {
+                                    loadingText = "Select Video"
+                                } else {
+                                    loadingText = "Change Video"
+                                }
+                                return loadingText
+                            }(),
                             systemImage: "film"
                         )
                     }
@@ -51,19 +49,43 @@ struct ContentView: View {
             }
         }
         .overlay(alignment: .center, content: exportOverlay)
-        .onChange(of: selectedItem) { _, newItem in
-            guard let newItem else { return }
-            Task { @MainActor in await handleSelection(newItem) }
+        // Observe selectedItem using task instead of onChange
+        .task(id: selectedItem, priority: .userInitiated) { @Sendable [selectedItem] in
+            guard let newItem = selectedItem else { return }
+            await MainActor.run {
+                isProcessingSelection = true
+            }
+            await handleSelection(newItem)
+            await MainActor.run {
+                isProcessingSelection = false
+            }
         }
-        .onChange(of: exportViewModel.exportError) { _, error in
-            guard let error else { return }
-            alertMessage = error.localizedDescription
-            isShowingAlert = true
+        .task(priority: .userInitiated) { @Sendable in
+            if let error = await exportViewModel.exportError {
+                await MainActor.run {
+                    alertMessage = error.localizedDescription
+                    isShowingAlert = true
+                }
+            }
         }
         .alert("Error", isPresented: $isShowingAlert) {
-            Button("OK", role: .cancel) { alertMessage = nil }
+            Button("OK", role: .cancel) { Task { await MainActor.run { alertMessage = nil } } }
         } message: {
             Text(alertMessage ?? "An unknown error occurred.")
+        }
+    }
+
+    @ViewBuilder
+    private var mainContent: some View {
+        if projectStore.currentProject.videoBookmark == nil && !isProcessingSelection {
+            emptyState
+        } else {
+            MatchEditorView(
+                isSelectionInProgress: isProcessingSelection,
+                onRequestExport: { _ in
+                    Task { await startExport() }
+                }
+            )
         }
     }
 
@@ -126,9 +148,10 @@ struct ContentView: View {
         }
     }
 
+    @MainActor
     private func handleSelection(_ item: PhotosPickerItem) async {
-        isProcessingSelection = true
-        defer { isProcessingSelection = false }
+        await MainActor.run { isProcessingSelection = true }
+        defer { Task { await MainActor.run { isProcessingSelection = false } } }
 
         do {
             guard let movieData = try await item.loadTransferable(type: Data.self) else {
@@ -159,10 +182,12 @@ struct ContentView: View {
             timelineViewModel.updateCurrentScore(for: 0)
             playerViewModel.pause()
 
-            selectedItem = nil
+            await MainActor.run { selectedItem = nil }
         } catch {
-            alertMessage = error.localizedDescription
-            isShowingAlert = true
+            await MainActor.run {
+                alertMessage = error.localizedDescription
+                isShowingAlert = true
+            }
         }
     }
 
@@ -188,11 +213,13 @@ struct ContentView: View {
         }
     }
 
+    @MainActor
     private func startExport() async {
         let project = projectStore.currentProject
         await startExport(with: project)
     }
 
+    @MainActor
     private func startExport(with project: Project) async {
         await exportViewModel.startExport(from: project) { project, bookmarkData in
             var refreshed = project

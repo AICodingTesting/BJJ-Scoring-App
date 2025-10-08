@@ -34,6 +34,7 @@
 		CF4DD0C32F794818BB8D05CA /* CompositionBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B23947F661464DBC9FEDEBE9 /* CompositionBuilder.swift */; };
 		E042BB050A3C46BC8DF09D3E /* Competitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B5ED783EF254404A3BCE58F /* Competitor.swift */; };
 		E61C5F94065947D8BB93152E /* HapticsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF8F44476B2B4A55BF6DBABA /* HapticsManager.swift */; };
+		E93B5B772E9700ED00710B91 /* MatchEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E93B5B762E9700ED00710B91 /* MatchEditorView.swift */; };
 		F64AB0B59C3F4665B17F1B42 /* VideoPlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D363ACD1D294E499509BABA /* VideoPlayerView.swift */; };
 		F94711D822454A3D95821AA4 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9BED926452F4E4CA1015936 /* Project.swift */; };
 		FCA907237A764B4AB08A733D /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 86EB15A7C5CE4406AFD0F43E /* Preview Assets.xcassets */; };
@@ -66,6 +67,7 @@
 		DC6EB3F1133745F494373A34 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DEBDEF18AB4F44F8872A4903 /* EventHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EventHistoryView.swift; path = Views/EventHistoryView.swift; sourceTree = "<group>"; };
 		E2DA0BC3306946189356ADB9 /* MetadataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetadataView.swift; path = Views/MetadataView.swift; sourceTree = "<group>"; };
+		E93B5B762E9700ED00710B91 /* MatchEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchEditorView.swift; sourceTree = "<group>"; };
 		E9687B036C4A4ACAA4F92DFD /* ScoreEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ScoreEvent.swift; path = Models/ScoreEvent.swift; sourceTree = "<group>"; };
 		EA5E584E2E7D432A9905C2A5 /* MatchMetadata.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MatchMetadata.swift; path = Models/MatchMetadata.swift; sourceTree = "<group>"; };
 		EF8F44476B2B4A55BF6DBABA /* HapticsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = HapticsManager.swift; path = Utilities/HapticsManager.swift; sourceTree = "<group>"; };
@@ -158,6 +160,7 @@
 		BF2A32B346FE42A799C7FC46 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				E93B5B762E9700ED00710B91 /* MatchEditorView.swift */,
 				C5C9E2D160EC4F3FB3B59C72 /* ContentView.swift */,
 				080B1C26739F4AE8B9AFE147 /* ControlsView.swift */,
 				0265B6EBC49040E3BE611527 /* EventEditView.swift */,
@@ -223,7 +226,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
-				LastUpgradeCheck = 1500;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
 					B5149E7BFD8B4F0592B6BD89 = {
 						CreatedOnToolsVersion = 15.0;
@@ -236,6 +239,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = 67BA9008EADA418DB07EBF92;
 			productRefGroup = 5915283BA22F4B11ACF43822 /* Products */;
@@ -264,6 +268,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E93B5B772E9700ED00710B91 /* MatchEditorView.swift in Sources */,
 				CF4DD0C32F794818BB8D05CA /* CompositionBuilder.swift in Sources */,
 				E61C5F94065947D8BB93152E /* HapticsManager.swift in Sources */,
 				0A996852543B471EAE42E343 /* TimelineViewModel.swift in Sources */,
@@ -304,7 +309,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BJJScoreTracker/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
@@ -356,8 +360,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = XV9DKZ4UQ9;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -376,6 +382,7 @@
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -414,8 +421,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = XV9DKZ4UQ9;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -427,6 +436,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 			};
@@ -438,7 +448,6 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = BJJScoreTracker/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
