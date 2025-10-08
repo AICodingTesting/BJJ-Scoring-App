@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ExportSettingsView: View {
     @Binding var preferences: ExportPreferences
-    var onExport: (Bool) -> Void
+    var onExport: () -> Void
     var isExporting: Bool
     var progress: Double
 
@@ -44,7 +44,7 @@ struct ExportSettingsView: View {
                 }
             }
             Section {
-                Button(action: { onExport(true) }) {
+                Button(action: onExport) {
                     if isExporting {
                         ProgressView(value: progress)
                     } else {
