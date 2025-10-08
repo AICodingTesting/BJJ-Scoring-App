@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+@MainActor
 final class TimelineViewModel: ObservableObject {
     @Published private(set) var events: [ScoreEvent]
     @Published private(set) var notes: [MatchNote]

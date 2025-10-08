@@ -1,4 +1,4 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 import CoreGraphics
 import UIKit
 
@@ -9,7 +9,7 @@ final class OverlayRenderer {
         from composition: AVMutableComposition,
         videoSize: CGSize,
         metadata: MatchMetadata,
-        completion: @escaping (AVVideoComposition) -> Void
+        completion: @escaping @Sendable (AVVideoComposition) -> Void
     ) {
         // Create video composition
         let videoComposition = AVMutableVideoComposition(propertiesOf: composition)

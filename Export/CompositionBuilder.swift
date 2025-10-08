@@ -1,4 +1,4 @@
-import AVFoundation
+@preconcurrency import AVFoundation
 import UIKit
 
 /// Builds a full export composition with synchronized video and overlay.
@@ -7,7 +7,7 @@ final class CompositionBuilder {
     static func buildComposition(
         with videoAsset: AVAsset,
         metadata: MatchMetadata,
-        completion: @escaping @MainActor (AVAssetExportSession?) -> Void
+        completion: @escaping @Sendable @MainActor (AVAssetExportSession?) -> Void
     ) async {
         // 1. Create composition
         let composition = AVMutableComposition()

@@ -1,5 +1,5 @@
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 import Dispatch
 
 protocol VideoExportSession: AnyObject {
@@ -8,7 +8,7 @@ protocol VideoExportSession: AnyObject {
     var outputURL: URL? { get set }
     var outputFileType: AVFileType? { get set }
     var error: Error? { get }
-    func exportAsynchronously(completionHandler handler: @escaping () -> Void)
+    func exportAsynchronously(completionHandler handler: @escaping @Sendable () -> Void)
     func cancelExport()
 }
 
@@ -18,7 +18,7 @@ extension AVAssetExportSession: @unchecked Sendable {}
 /// ViewModel responsible for exporting video assets asynchronously.
 @MainActor
 final class ExportViewModel: ObservableObject {
-    typealias BookmarkRefreshHandler = (Project, Data) -> Void
+    typealias BookmarkRefreshHandler = @Sendable (Project, Data) -> Void
 
     enum ExportError: LocalizedError {
         case missingVideoBookmark
@@ -42,17 +42,17 @@ final class ExportViewModel: ObservableObject {
     /// Error encountered during export, if any.
     @Published var exportError: Error?
 
-    private let resolveBookmark: (Data) async throws -> BookmarkResolver.ResolvedBookmark
-    private let bookmarkCreator: (URL) -> Data?
-    private let exportSessionFactory: (AVAsset) async -> VideoExportSession?
+    private let resolveBookmark: @Sendable (Data) async throws -> BookmarkResolver.ResolvedBookmark
+    private let bookmarkCreator: @Sendable (URL) -> Data?
+    private let exportSessionFactory: @Sendable (AVAsset) async -> VideoExportSession?
 
     private var exporter: VideoExportSession?
     private var progressTask: Task<Void, Never>?
 
     init(
-        resolveBookmark: @escaping (Data) async throws -> BookmarkResolver.ResolvedBookmark = BookmarkResolver.resolveBookmark(from:),
-        bookmarkCreator: @escaping (URL) -> Data? = BookmarkResolver.bookmark(for:),
-        exportSessionFactory: @escaping (AVAsset) async -> VideoExportSession? = ExportViewModel.defaultExportSessionFactory
+        resolveBookmark: @escaping @Sendable (Data) async throws -> BookmarkResolver.ResolvedBookmark = BookmarkResolver.resolveBookmark(from:),
+        bookmarkCreator: @escaping @Sendable (URL) -> Data? = BookmarkResolver.bookmark(for:),
+        exportSessionFactory: @escaping @Sendable (AVAsset) async -> VideoExportSession? = ExportViewModel.defaultExportSessionFactory
     ) {
         self.resolveBookmark = resolveBookmark
         self.bookmarkCreator = bookmarkCreator
@@ -148,22 +148,26 @@ final class ExportViewModel: ObservableObject {
             }
 
             progressTask?.cancel()
-            progressTask = Task { [weak self, weak exportSession] in
-                guard let self = self else { return }
+            progressTask = Task { [weak exportSession] in
                 do {
                     while let exportSession, exportSession.status == .exporting {
                         try Task.checkCancellation()
                         try await Task.sleep(nanoseconds: 200_000_000)
-                        await MainActor.run {
-                            self.exportProgress = Double(exportSession.progress)
+                        let progressValue = Double(exportSession.progress)
+                        await MainActor.run { [weak self] in
+                            self?.exportProgress = progressValue
                         }
                     }
                 } catch {
                     // Task was cancelled or error occurred, safely ignore
                 }
-                await MainActor.run {
+                let status = exportSession?.status
+                await MainActor.run { [weak self] in
+                    guard let self else { return }
                     self.progressTask = nil
-                    self.exportProgress = 1.0
+                    if status == .completed {
+                        self.exportProgress = 1.0
+                    }
                 }
             }
         } catch {
@@ -192,18 +196,13 @@ final class ExportViewModel: ObservableObject {
         let bookmarkCreator = bookmarkCreator
         DispatchQueue.global(qos: .utility).async {
             guard let refreshedBookmark = bookmarkCreator(resolvedURL) else { return }
-            DispatchQueue.main.async {
+            Task { @MainActor in
                 handler(project, refreshedBookmark)
             }
         }
     }
 
     private static func defaultExportSessionFactory(for asset: AVAsset) async -> VideoExportSession? {
-        await withCheckedContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
-                continuation.resume(returning: session)
-            }
-        }
+        AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
     }
 }

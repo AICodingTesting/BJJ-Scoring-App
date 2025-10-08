@@ -23,7 +23,7 @@ struct ContentView: View {
                         MatchEditorView(
                             isSelectionInProgress: isProcessingSelection,
                             onRequestExport: {
-                                Task { await startExport() }
+                                Task { @MainActor in await startExport() }
                             }
                         )
                     }
@@ -53,7 +53,7 @@ struct ContentView: View {
         .overlay(alignment: .center, content: exportOverlay)
         .onChange(of: selectedItem) { _, newItem in
             guard let newItem else { return }
-            Task { await handleSelection(newItem) }
+            Task { @MainActor in await handleSelection(newItem) }
         }
         .onChange(of: exportViewModel.exportError) { _, error in
             guard let error else { return }
