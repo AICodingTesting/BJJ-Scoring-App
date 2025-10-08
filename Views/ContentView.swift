@@ -54,9 +54,9 @@ struct ContentView: View {
             guard let newItem = selectedItem else { return }
             await handleSelection(newItem)
         }
-        .onChange(of: exportViewModel.exportError) { error in
-            guard let error else { return }
-            alertMessage = error.localizedDescription
+        .onChange(of: exportViewModel.exportError?.localizedDescription) { description in
+            guard let description else { return }
+            alertMessage = description
             isShowingAlert = true
         }
         .alert("Error", isPresented: $isShowingAlert) {
@@ -167,7 +167,9 @@ struct ContentView: View {
                 updatedProject.metadata.title = updatedProject.title
             }
             updatedProject.updatedAt = Date()
-            projectStore.update(updatedProject)
+            await MainActor.run {
+                projectStore.update(updatedProject)
+            }
 
             timelineViewModel.configure(events: [], notes: [])
             timelineViewModel.updateCurrentScore(for: 0)
@@ -205,10 +207,12 @@ struct ContentView: View {
     @MainActor
     private func startExport(with project: Project) async {
         await exportViewModel.startExport(from: project) { project, bookmarkData in
-            var refreshed = project
-            refreshed.videoBookmark = bookmarkData
-            refreshed.updatedAt = Date()
-            projectStore.update(refreshed)
+            await MainActor.run {
+                var refreshed = project
+                refreshed.videoBookmark = bookmarkData
+                refreshed.updatedAt = Date()
+                projectStore.update(refreshed)
+            }
         }
     }
 }
