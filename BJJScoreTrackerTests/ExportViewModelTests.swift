@@ -1,6 +1,6 @@
 import XCTest
 import Dispatch
-import AVFoundation
+@preconcurrency import AVFoundation
 @testable import BJJScoreTracker
 
 final class MockExportSession: VideoExportSession {
@@ -9,9 +9,9 @@ final class MockExportSession: VideoExportSession {
     var outputURL: URL?
     var outputFileType: AVFileType?
     var error: Error?
-    var exportCompletion: (() -> Void)?
+    var exportCompletion: (@Sendable () -> Void)?
 
-    func exportAsynchronously(completionHandler handler: @escaping () -> Void) {
+    func exportAsynchronously(completionHandler handler: @escaping @Sendable () -> Void) {
         status = .exporting
         DispatchQueue.global(qos: .userInitiated).asyncAfter(deadline: .now() + 0.01) { [weak self] in
             guard let self = self else { return }

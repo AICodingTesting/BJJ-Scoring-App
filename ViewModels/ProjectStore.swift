@@ -1,6 +1,7 @@
 import Foundation
 import Combine
 
+@MainActor
 final class ProjectStore: ObservableObject {
     @Published var projects: [Project] = []
     @Published var currentProject: Project = Project()

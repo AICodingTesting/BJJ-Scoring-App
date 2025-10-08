@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct MatchEditorView: View {
     @EnvironmentObject private var projectStore: ProjectStore
     @EnvironmentObject private var playerViewModel: PlayerViewModel
@@ -7,7 +8,7 @@ struct MatchEditorView: View {
     @EnvironmentObject private var exportViewModel: ExportViewModel
 
     var isSelectionInProgress: Bool
-    var onRequestExport: () -> Void
+    var onRequestExport: @Sendable () -> Void
 
     @State private var scrubbingPosition: Double = 0
     @State private var isScrubbing = false
@@ -371,25 +372,19 @@ struct MatchEditorView: View {
         isLoadingVideo = true
         loadError = nil
 
-        Task {
+        Task { @MainActor in
             do {
                 let resolved = try await BookmarkResolver.resolveBookmark(from: bookmark)
                 if resolved.isStale, let refreshed = BookmarkResolver.bookmark(for: resolved.url) {
-                    await MainActor.run {
-                        updateProject { project in
-                            project.videoBookmark = refreshed
-                        }
+                    updateProject { project in
+                        project.videoBookmark = refreshed
                     }
                 }
-                await MainActor.run {
-                    playerViewModel.load(url: resolved.url)
-                    isLoadingVideo = false
-                }
+                await playerViewModel.load(url: resolved.url)
+                isLoadingVideo = false
             } catch {
-                await MainActor.run {
-                    isLoadingVideo = false
-                    loadError = error.localizedDescription
-                }
+                isLoadingVideo = false
+                loadError = error.localizedDescription
             }
         }
     }

@@ -1,7 +1,8 @@
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 import Combine
 
+@MainActor
 final class PlayerViewModel: ObservableObject {
     @Published var player: AVPlayer?
     @Published var duration: Double = 0
@@ -16,35 +17,26 @@ final class PlayerViewModel: ObservableObject {
         removeObservers()
     }
 
-    func load(url: URL) {
+    func load(url: URL) async {
         removeObservers()
         isReady = false
         isPlaying = false
         currentTime = 0
 
         let asset = AVURLAsset(url: url)
-        asset.loadValuesAsynchronously(forKeys: ["duration"]) { [weak self] in
-            guard let self else { return }
-            var error: NSError?
-            let status = asset.statusOfValue(forKey: "duration", error: &error)
-            DispatchQueue.main.async {
-                switch status {
-                case .loaded:
-                    let durationSeconds = CMTimeGetSeconds(asset.duration)
-                    self.duration = durationSeconds.isFinite ? durationSeconds : 0
-                    self.currentTime = 0
-                    self.isPlaying = false
-                    let item = AVPlayerItem(asset: asset)
-                    self.configurePlayer(with: item)
-                    self.isReady = true
-                case .failed, .cancelled:
-                    self.player = nil
-                    self.duration = 0
-                    self.isReady = false
-                default:
-                    break
-                }
-            }
+        do {
+            let loadedDuration = try await asset.load(.duration)
+            let durationSeconds = CMTimeGetSeconds(loadedDuration)
+            duration = durationSeconds.isFinite ? durationSeconds : 0
+            currentTime = 0
+            isPlaying = false
+            let item = AVPlayerItem(asset: asset)
+            configurePlayer(with: item)
+            isReady = true
+        } catch {
+            player = nil
+            duration = 0
+            isReady = false
         }
     }
 

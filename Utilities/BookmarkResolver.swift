@@ -28,7 +28,7 @@ struct BookmarkResolver {
         return try? url.bookmarkData()
     }
 
-    static func withResolvedBookmark<T>(_ data: Data, perform block: (URL) throws -> T) async rethrows -> T? {
+    static func withResolvedBookmark<T>(_ data: Data, perform block: @Sendable (URL) throws -> T) async rethrows -> T? {
         let resolved = try await resolveBookmark(from: data)
         return try? block(resolved.url)
     }

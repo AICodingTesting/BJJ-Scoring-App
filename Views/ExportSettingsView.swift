@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ExportSettingsView: View {
     @Binding var preferences: ExportPreferences
-    var onExport: () -> Void
+    var onExport: @Sendable () -> Void
     var isExporting: Bool
     var progress: Double
 
