@@ -1,3 +1,4 @@
+@preconcurrency import AVFoundation
 import Foundation
 @preconcurrency import AVFoundation
 import Dispatch
@@ -83,14 +84,18 @@ final class ExportViewModel: ObservableObject {
     func startExport(from project: Project, refreshBookmark: BookmarkRefreshHandler? = nil) async {
         guard !isExporting else { return }
 
-        exportProgress = 0.0
-        isExporting = true
-        exportCompleted = false
-        exportError = nil
+        await MainActor.run {
+            exportProgress = 0.0
+            isExporting = true
+            exportCompleted = false
+            exportError = nil
+        }
 
         guard let bookmarkData = project.videoBookmark else {
-            exportError = ExportError.missingVideoBookmark
-            isExporting = false
+            await MainActor.run {
+                exportError = ExportError.missingVideoBookmark
+                isExporting = false
+            }
             return
         }
 
@@ -105,8 +110,10 @@ final class ExportViewModel: ObservableObject {
             let asset = AVAsset(url: videoURL)
 
             guard let exportSession = await exportSessionFactory(asset) else {
-                exportError = NSError(domain: "ExportViewModel", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to create export session."])
-                isExporting = false
+                await MainActor.run {
+                    exportError = NSError(domain: "ExportViewModel", code: -1, userInfo: [NSLocalizedDescriptionKey: "Failed to create export session."])
+                    isExporting = false
+                }
                 return
             }
 
@@ -121,29 +128,37 @@ final class ExportViewModel: ObservableObject {
             exportSession.outputURL = outputURL
             exportSession.outputFileType = .mov
 
-            exportSession.exportAsynchronously { [weak self, weak exportSession] in
+            exportSession.exportAsynchronously { [weak self] in
+                guard let self else { return }
                 Task { @MainActor in
-                    guard let self = self, let exportSession = exportSession else { return }
-                    self.isExporting = false
-
+                    await MainActor.run {
+                        self.isExporting = false
+                    }
                     switch exportSession.status {
                     case .completed:
-                        self.exportCompleted = true
-                        self.exportURL = outputURL
-                        print("Export completed successfully: \(outputURL)")
+                        await MainActor.run {
+                            self.exportCompleted = true
+                            self.exportURL = exportSession.outputURL
+                        }
+                        print("Export completed successfully: \(String(describing: exportSession.outputURL))")
                     case .failed:
-                        self.exportError = exportSession.error
+                        await MainActor.run {
+                            self.exportError = exportSession.error
+                        }
                         print("Export failed with error: \(String(describing: exportSession.error))")
                     case .cancelled:
-                        self.exportError = NSError(domain: "ExportViewModel", code: -2, userInfo: [NSLocalizedDescriptionKey: "Export was cancelled."])
+                        await MainActor.run {
+                            self.exportError = NSError(domain: "ExportViewModel", code: -2, userInfo: [NSLocalizedDescriptionKey: "Export was cancelled."])
+                        }
                         print("Export was cancelled.")
                     default:
                         break
                     }
-
-                    self.progressTask?.cancel()
-                    self.progressTask = nil
-                    self.resetState()
+                    await MainActor.run {
+                        self.progressTask?.cancel()
+                        self.progressTask = nil
+                        self.resetState()
+                    }
                 }
             }
 
@@ -171,11 +186,13 @@ final class ExportViewModel: ObservableObject {
                 }
             }
         } catch {
-            exportError = error
-            isExporting = false
-            progressTask?.cancel()
-            progressTask = nil
-            resetState()
+            await MainActor.run {
+                exportError = error
+                isExporting = false
+                progressTask?.cancel()
+                progressTask = nil
+                resetState()
+            }
         }
     }
 

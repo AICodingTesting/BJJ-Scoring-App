@@ -7,7 +7,7 @@ struct MatchEditorView: View {
     @EnvironmentObject private var exportViewModel: ExportViewModel
 
     var isSelectionInProgress: Bool
-    var onRequestExport: () -> Void
+    var onRequestExport: ((Bool) -> Void)?
 
     @State private var scrubbingPosition: Double = 0
     @State private var isScrubbing = false
@@ -65,8 +65,8 @@ struct MatchEditorView: View {
             NavigationStack {
                 ExportSettingsView(
                     preferences: exportPreferencesBinding,
-                    onExport: {
-                        onRequestExport()
+                    onExport: { success in
+                        onRequestExport?(success)
                         showingExportSheet = false
                     },
                     isExporting: exportViewModel.isExporting,

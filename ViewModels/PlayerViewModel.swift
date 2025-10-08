@@ -24,19 +24,27 @@ final class PlayerViewModel: ObservableObject {
         currentTime = 0
 
         let asset = AVURLAsset(url: url)
-        do {
-            let loadedDuration = try await asset.load(.duration)
-            let durationSeconds = CMTimeGetSeconds(loadedDuration)
-            duration = durationSeconds.isFinite ? durationSeconds : 0
-            currentTime = 0
-            isPlaying = false
-            let item = AVPlayerItem(asset: asset)
-            configurePlayer(with: item)
-            isReady = true
-        } catch {
-            player = nil
-            duration = 0
-            isReady = false
+        Task.detached { [weak self] in
+            guard let self else { return }
+            do {
+                let duration = try await asset.load(.duration)
+                await MainActor.run {
+                    let durationSeconds = CMTimeGetSeconds(duration)
+                    self.duration = durationSeconds.isFinite ? durationSeconds : 0
+                    self.currentTime = 0
+                    self.isPlaying = false
+                    let item = AVPlayerItem(asset: asset)
+                    self.configurePlayer(with: item)
+                    self.isReady = true
+                }
+            } catch {
+                await MainActor.run {
+                    self.player = nil
+                    self.duration = 0
+                    self.isReady = false
+                }
+            }
+        }
         }
     }
 
