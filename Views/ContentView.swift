@@ -1,4 +1,4 @@
-@preconcurrency import SwiftUI
+import SwiftUI
 import PhotosUI
 
 @MainActor
@@ -50,26 +50,17 @@ struct ContentView: View {
         }
         .overlay(alignment: .center, content: exportOverlay)
         // Observe selectedItem using task instead of onChange
-        .task(id: selectedItem, priority: .userInitiated) { @Sendable [selectedItem] in
+        .task(id: selectedItem, priority: .userInitiated) {
             guard let newItem = selectedItem else { return }
-            await MainActor.run {
-                isProcessingSelection = true
-            }
             await handleSelection(newItem)
-            await MainActor.run {
-                isProcessingSelection = false
-            }
         }
-        .task(priority: .userInitiated) { @Sendable in
-            if let error = await exportViewModel.exportError {
-                await MainActor.run {
-                    alertMessage = error.localizedDescription
-                    isShowingAlert = true
-                }
-            }
+        .onChange(of: exportViewModel.exportError) { error in
+            guard let error else { return }
+            alertMessage = error.localizedDescription
+            isShowingAlert = true
         }
         .alert("Error", isPresented: $isShowingAlert) {
-            Button("OK", role: .cancel) { Task { await MainActor.run { alertMessage = nil } } }
+            Button("OK", role: .cancel) { alertMessage = nil }
         } message: {
             Text(alertMessage ?? "An unknown error occurred.")
         }
@@ -82,7 +73,7 @@ struct ContentView: View {
         } else {
             MatchEditorView(
                 isSelectionInProgress: isProcessingSelection,
-                onRequestExport: { _ in
+                onRequestExport: {
                     Task { await startExport() }
                 }
             )
@@ -150,8 +141,8 @@ struct ContentView: View {
 
     @MainActor
     private func handleSelection(_ item: PhotosPickerItem) async {
-        await MainActor.run { isProcessingSelection = true }
-        defer { Task { await MainActor.run { isProcessingSelection = false } } }
+        isProcessingSelection = true
+        defer { isProcessingSelection = false }
 
         do {
             guard let movieData = try await item.loadTransferable(type: Data.self) else {
@@ -182,35 +173,27 @@ struct ContentView: View {
             timelineViewModel.updateCurrentScore(for: 0)
             playerViewModel.pause()
 
-            await MainActor.run { selectedItem = nil }
+            selectedItem = nil
         } catch {
-            await MainActor.run {
-                alertMessage = error.localizedDescription
-                isShowingAlert = true
-            }
+            alertMessage = error.localizedDescription
+            isShowingAlert = true
         }
     }
 
     private func persistVideoData(_ data: Data, identifier: String?) async throws -> URL {
-        try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global(qos: .userInitiated).async {
-                do {
-                    let fileManager = FileManager.default
-                    let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first ?? fileManager.temporaryDirectory
+        try await Task.detached(priority: .userInitiated) { () throws -> URL in
+            let fileManager = FileManager.default
+            let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first ?? fileManager.temporaryDirectory
 
-                    let fallbackName = UUID().uuidString + ".mov"
-                    let rawName = identifier?.trimmingCharacters(in: .whitespacesAndNewlines)
-                    let sanitizedBase = rawName?.isEmpty == false ? rawName! : fallbackName
-                    let safeName = sanitizedBase.replacingOccurrences(of: "/", with: "-")
-                    let destinationURL = documentsDirectory.appendingPathComponent(UUID().uuidString + "-" + safeName)
+            let fallbackName = UUID().uuidString + ".mov"
+            let rawName = identifier?.trimmingCharacters(in: .whitespacesAndNewlines)
+            let sanitizedBase = rawName?.isEmpty == false ? rawName! : fallbackName
+            let safeName = sanitizedBase.replacingOccurrences(of: "/", with: "-")
+            let destinationURL = documentsDirectory.appendingPathComponent(UUID().uuidString + "-" + safeName)
 
-                    try data.write(to: destinationURL, options: [.atomic])
-                    continuation.resume(returning: destinationURL)
-                } catch {
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
+            try data.write(to: destinationURL, options: [.atomic])
+            return destinationURL
+        }.value
     }
 
     @MainActor

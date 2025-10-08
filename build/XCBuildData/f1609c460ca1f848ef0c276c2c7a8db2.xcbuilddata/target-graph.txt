@@ -1,2 +1,0 @@
-Target dependency graph (1 target)
-Target 'BJJScoreTracker' in project 'BJJScoreTracker' (no dependencies)

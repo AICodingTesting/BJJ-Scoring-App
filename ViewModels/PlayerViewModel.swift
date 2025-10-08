@@ -24,27 +24,21 @@ final class PlayerViewModel: ObservableObject {
         currentTime = 0
 
         let asset = AVURLAsset(url: url)
-        Task.detached { [weak self] in
-            guard let self else { return }
-            do {
-                let duration = try await asset.load(.duration)
-                await MainActor.run {
-                    let durationSeconds = CMTimeGetSeconds(duration)
-                    self.duration = durationSeconds.isFinite ? durationSeconds : 0
-                    self.currentTime = 0
-                    self.isPlaying = false
-                    let item = AVPlayerItem(asset: asset)
-                    self.configurePlayer(with: item)
-                    self.isReady = true
-                }
-            } catch {
-                await MainActor.run {
-                    self.player = nil
-                    self.duration = 0
-                    self.isReady = false
-                }
-            }
-        }
+
+        do {
+            let duration = try await asset.load(.duration)
+            let durationSeconds = CMTimeGetSeconds(duration)
+            self.duration = durationSeconds.isFinite ? durationSeconds : 0
+            self.currentTime = 0
+            self.isPlaying = false
+
+            let item = AVPlayerItem(asset: asset)
+            configurePlayer(with: item)
+            isReady = true
+        } catch {
+            player = nil
+            duration = 0
+            isReady = false
         }
     }
 
@@ -76,6 +70,7 @@ final class PlayerViewModel: ObservableObject {
         }
 
         NotificationCenter.default.publisher(for: .AVPlayerItemDidPlayToEndTime)
+            .receive(on: RunLoop.main)
             .compactMap { $0.object as? AVPlayerItem }
             .filter { [weak player] item in
                 guard let player else { return false }

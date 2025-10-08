@@ -1,0 +1,9 @@
+# Swift Package / Xcode
+DerivedData/
+build/
+
+# macOS Finder
+.DS_Store
+
+# SwiftPM
+.swiftpm/
