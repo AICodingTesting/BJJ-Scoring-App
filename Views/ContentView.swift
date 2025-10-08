@@ -1,92 +1,129 @@
-import Foundation
 import SwiftUI
 import PhotosUI
 
 @MainActor
 struct ContentView: View {
-    @EnvironmentObject var projectStore: ProjectStore
-    @StateObject private var exportViewModel = ExportViewModel()
+    @EnvironmentObject private var projectStore: ProjectStore
+    @EnvironmentObject private var playerViewModel: PlayerViewModel
+    @EnvironmentObject private var timelineViewModel: TimelineViewModel
+    @EnvironmentObject private var exportViewModel: ExportViewModel
+
     @State private var selectedItem: PhotosPickerItem?
     @State private var isProcessingSelection = false
     @State private var alertMessage: String?
     @State private var isShowingAlert = false
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 24) {
-                Text("BJJ Score Tracker")
-                    .font(.largeTitle)
-                    .padding(.top, 40)
-
-                PhotosPicker(
-                    selection: $selectedItem,
-                    matching: .videos,
-                    photoLibrary: .shared()
-                ) {
-                    Text(isProcessingSelection ? "Loading..." : "Select Video")
-                        .frame(maxWidth: .infinity)
+        NavigationStack {
+            ZStack {
+                Group {
+                    if projectStore.currentProject.videoBookmark == nil && !isProcessingSelection {
+                        emptyState
+                    } else {
+                        MatchEditorView(
+                            isSelectionInProgress: isProcessingSelection,
+                            onRequestExport: {
+                                Task { await startExport() }
+                            }
+                        )
+                    }
                 }
-                .buttonStyle(.borderedProminent)
-                .disabled(isProcessingSelection || exportViewModel.isExporting)
-                .padding(.horizontal)
 
                 if isProcessingSelection {
-                    ProgressView("Preparing video...")
-                        .padding(.horizontal)
-                } else if projectStore.currentProject.videoBookmark != nil {
-                    Button("Start Export") {
-                        Task {
-                            await startExport()
-                        }
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .padding(.horizontal)
-                } else {
-                    Text("Select a video to begin exporting.")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .padding(.horizontal)
+                    selectionOverlay
                 }
-
-                Spacer()
             }
-
-            if exportViewModel.isExporting {
-                ZStack {
-                    Color.black.opacity(0.3)
-                        .ignoresSafeArea()
-
-                    VStack(spacing: 16) {
-                        ProgressView(value: exportViewModel.exportProgress, total: 1.0)
-                        Text("\(Int(exportViewModel.exportProgress * 100))%")
-                            .foregroundColor(.white)
-                        Text("Exporting video...")
-                            .foregroundColor(.white)
+            .navigationTitle("BJJ Score Tracker")
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    PhotosPicker(
+                        selection: $selectedItem,
+                        matching: .videos,
+                        photoLibrary: .shared()
+                    ) {
+                        Label(
+                            isProcessingSelection ? "Loading..." : (projectStore.currentProject.videoBookmark == nil ? "Select Video" : "Change Video"),
+                            systemImage: "film"
+                        )
                     }
-                    .padding(24)
-                    .background(Color.black.opacity(0.6))
-                    .cornerRadius(12)
+                    .disabled(isProcessingSelection || exportViewModel.isExporting)
                 }
             }
         }
+        .overlay(alignment: .center, content: exportOverlay)
         .onChange(of: selectedItem) { _, newItem in
             guard let newItem else { return }
-            Task {
-                await handleSelection(newItem)
-            }
+            Task { await handleSelection(newItem) }
         }
         .onChange(of: exportViewModel.exportError) { _, error in
             guard let error else { return }
             alertMessage = error.localizedDescription
             isShowingAlert = true
         }
-        .alert("Export Error", isPresented: $isShowingAlert, actions: {
-            Button("OK", role: .cancel) {
-                alertMessage = nil
-            }
-        }, message: {
+        .alert("Error", isPresented: $isShowingAlert) {
+            Button("OK", role: .cancel) { alertMessage = nil }
+        } message: {
             Text(alertMessage ?? "An unknown error occurred.")
-        })
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 24) {
+            Spacer()
+            Image(systemName: "rectangle.on.rectangle")
+                .font(.system(size: 64))
+                .foregroundStyle(.secondary)
+            Text("Select a training video to start scoring matches.")
+                .font(.title3)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal)
+            Text("Use the \"Select Video\" button in the toolbar to import footage. You can add scoring events, notes, and metadata once the clip is loaded.")
+                .font(.footnote)
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal, 32)
+            Spacer()
+        }
+    }
+
+    private var selectionOverlay: some View {
+        ZStack {
+            Color.black.opacity(0.35)
+                .ignoresSafeArea()
+            VStack(spacing: 16) {
+                ProgressView()
+                Text("Importing video...")
+                    .font(.headline)
+                    .foregroundStyle(.white)
+            }
+            .padding(32)
+            .background(Color.black.opacity(0.6), in: RoundedRectangle(cornerRadius: 16))
+        }
+        .transition(.opacity)
+    }
+
+    @ViewBuilder
+    private func exportOverlay() -> some View {
+        if exportViewModel.isExporting {
+            ZStack {
+                Color.black.opacity(0.35)
+                    .ignoresSafeArea()
+                VStack(spacing: 16) {
+                    ProgressView(value: exportViewModel.exportProgress, total: 1.0)
+                        .progressViewStyle(.linear)
+                        .tint(.white)
+                    Text("\(Int(exportViewModel.exportProgress * 100))%")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(.white)
+                    Text("Exporting video...")
+                        .foregroundStyle(.white.opacity(0.9))
+                }
+                .padding(28)
+                .background(Color.black.opacity(0.6), in: RoundedRectangle(cornerRadius: 16))
+            }
+            .transition(.opacity)
+        }
     }
 
     private func handleSelection(_ item: PhotosPickerItem) async {
@@ -106,10 +143,22 @@ struct ContentView: View {
             var updatedProject = projectStore.currentProject
             updatedProject.videoBookmark = bookmarkData
             updatedProject.videoFilename = destinationURL.lastPathComponent
+            updatedProject.duration = 0
+            updatedProject.events = []
+            updatedProject.notes = []
+            if updatedProject.title == "New Match" {
+                updatedProject.title = destinationURL.deletingPathExtension().lastPathComponent
+            }
+            if updatedProject.metadata.title.isEmpty {
+                updatedProject.metadata.title = updatedProject.title
+            }
             updatedProject.updatedAt = Date()
             projectStore.update(updatedProject)
 
-            await startExport(with: updatedProject)
+            timelineViewModel.configure(events: [], notes: [])
+            timelineViewModel.updateCurrentScore(for: 0)
+            playerViewModel.pause()
+
             selectedItem = nil
         } catch {
             alertMessage = error.localizedDescription
@@ -146,10 +195,10 @@ struct ContentView: View {
 
     private func startExport(with project: Project) async {
         await exportViewModel.startExport(from: project) { project, bookmarkData in
-            var updatedProject = project
-            updatedProject.videoBookmark = bookmarkData
-            updatedProject.updatedAt = Date()
-            projectStore.update(updatedProject)
+            var refreshed = project
+            refreshed.videoBookmark = bookmarkData
+            refreshed.updatedAt = Date()
+            projectStore.update(refreshed)
         }
     }
 }

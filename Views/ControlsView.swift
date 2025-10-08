@@ -1,39 +1,26 @@
 import SwiftUI
 
 struct ControlsView: View {
+    var showsCardBackground: Bool = true
     var onScore: (Competitor, ScoreEventAction) -> Void
     var onUndo: () -> Void
     var onRedo: () -> Void
 
+    @ViewBuilder
     var body: some View {
-        VStack(spacing: 12) {
-            HStack(spacing: 16) {
-                controlColumn(for: .athleteA, label: "\u{2190} Athlete A")
-                controlColumn(for: .athleteB, label: "Athlete B \u{2192}")
-            }
+        let content = baseContent()
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
 
-            HStack {
-                Button(action: onUndo) {
-                    Label("Undo", systemImage: "arrow.uturn.backward")
-                        .font(.headline)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.orange)
-
-                Button(action: onRedo) {
-                    Label("Redo", systemImage: "arrow.uturn.forward")
-                        .font(.headline)
-                        .padding(.horizontal, 16)
-                        .padding(.vertical, 10)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(.blue)
-            }
+        if showsCardBackground {
+            content
+                .background(
+                    .ultraThinMaterial,
+                    in: RoundedRectangle(cornerRadius: 24, style: .continuous)
+                )
+        } else {
+            content
         }
-        .padding()
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
     }
 
     private func controlColumn(for competitor: Competitor, label: String) -> some View {
@@ -79,5 +66,34 @@ struct ControlsView: View {
     private func trigger(_ competitor: Competitor, _ action: ScoreEventAction) {
         onScore(competitor, action)
         HapticsManager.impact()
+    }
+
+    private func baseContent() -> some View {
+        VStack(spacing: 12) {
+            HStack(spacing: 16) {
+                controlColumn(for: .athleteA, label: "\u{2190} Athlete A")
+                controlColumn(for: .athleteB, label: "Athlete B \u{2192}")
+            }
+
+            HStack {
+                Button(action: onUndo) {
+                    Label("Undo", systemImage: "arrow.uturn.backward")
+                        .font(.headline)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.orange)
+
+                Button(action: onRedo) {
+                    Label("Redo", systemImage: "arrow.uturn.forward")
+                        .font(.headline)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 10)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+            }
+        }
     }
 }
