@@ -1,4 +1,5 @@
 import Foundation
+import Dispatch
 
 /// A safe cross-platform bookmark resolver.
 /// On macOS, it uses security-scoped URLs; on iOS, it’s a simple URL decoder.
@@ -15,14 +16,20 @@ enum BookmarkResolver {
 
     /// Reconstructs a file URL from bookmark data.
     static func resolveBookmark(from data: Data) async throws -> ResolvedBookmark {
-        try await Task.detached(priority: .userInitiated) { () throws -> ResolvedBookmark in
-            var isStale = false
-            let url = try URL(
-                resolvingBookmarkData: data,
-                bookmarkDataIsStale: &isStale
-            )
-            return ResolvedBookmark(url: url, isStale: isStale)
-        }.value
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global(qos: .userInitiated).async {
+                do {
+                    var isStale = false
+                    let url = try URL(
+                        resolvingBookmarkData: data,
+                        bookmarkDataIsStale: &isStale
+                    )
+                    continuation.resume(returning: ResolvedBookmark(url: url, isStale: isStale))
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 
     /// Creates bookmark data from a URL.
