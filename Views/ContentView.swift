@@ -24,12 +24,13 @@ struct ContentView: View {
             .navigationTitle("BJJ Score Tracker")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
+                    let labelText = primaryActionLabelText
                     PhotosPicker(
                         selection: $selectedItem,
                         matching: .videos,
                         photoLibrary: .shared()
                     ) {
-                        Label(primaryActionLabelText, systemImage: "film")
+                        Label(labelText, systemImage: "film")
                     }
                     .disabled(isProcessingSelection || exportViewModel.isExporting)
                 }
