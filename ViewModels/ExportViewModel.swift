@@ -12,7 +12,6 @@ protocol VideoExportSession: AnyObject {
 }
 
 extension AVAssetExportSession: VideoExportSession {}
-extension AVAssetExportSession: @unchecked Sendable {}
 
 /// ViewModel responsible for exporting video assets asynchronously.
 @MainActor
@@ -49,8 +48,12 @@ final class ExportViewModel: ObservableObject {
     private var progressTask: Task<Void, Never>?
 
     init(
-        resolveBookmark: @escaping @Sendable (Data) async throws -> BookmarkResolver.ResolvedBookmark = BookmarkResolver.resolveBookmark(from:),
-        bookmarkCreator: @escaping @Sendable (URL) -> Data? = BookmarkResolver.bookmark(for:),
+        resolveBookmark: @escaping @Sendable (Data) async throws -> BookmarkResolver.ResolvedBookmark = { data in
+            try await BookmarkResolver.resolveBookmark(from: data)
+        },
+        bookmarkCreator: @escaping @Sendable (URL) -> Data? = { url in
+            BookmarkResolver.bookmark(for: url)
+        },
         exportSessionFactory: @escaping @Sendable (AVAsset) -> VideoExportSession? = ExportViewModel.defaultExportSessionFactory
     ) {
         self.resolveBookmark = resolveBookmark
@@ -141,7 +144,7 @@ final class ExportViewModel: ObservableObject {
             }
 
             progressTask?.cancel()
-            progressTask = Task.detached(priority: .utility) { [weak exportSession] in
+            progressTask = Task(priority: .utility) { [weak exportSession] in
                 do {
                     while let exportSession, exportSession.status == .exporting {
                         try Task.checkCancellation()
@@ -180,7 +183,7 @@ final class ExportViewModel: ObservableObject {
     private func scheduleBookmarkRefresh(for project: Project, resolvedURL: URL, handler: BookmarkRefreshHandler?) {
         guard let handler else { return }
         let bookmarkCreator = bookmarkCreator
-        Task.detached(priority: .utility) {
+        Task(priority: .utility) {
             guard let refreshedBookmark = bookmarkCreator(resolvedURL) else { return }
             await MainActor.run {
                 handler(project, refreshedBookmark)
