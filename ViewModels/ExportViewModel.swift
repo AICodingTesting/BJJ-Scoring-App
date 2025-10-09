@@ -70,6 +70,7 @@ final class ExportViewModel: ObservableObject {
 
     /// Resets the export state and clears exporter and progressTask.
     /// This method must be called on the MainActor.
+    @MainActor
     private func resetState() {
         progressTask = nil
         exporter = nil
@@ -191,7 +192,7 @@ final class ExportViewModel: ObservableObject {
         }
     }
 
-    private static func defaultExportSessionFactory(for asset: AVAsset) -> VideoExportSession? {
+    nonisolated private static func defaultExportSessionFactory(for asset: AVAsset) -> VideoExportSession? {
         AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
     }
 }
