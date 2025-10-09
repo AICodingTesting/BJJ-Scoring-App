@@ -41,9 +41,9 @@ final class ExportViewModel: ObservableObject {
     /// Error encountered during export, if any.
     @Published var exportError: Error?
 
-    private let resolveBookmark: (Data) async throws -> BookmarkResolver.ResolvedBookmark
-    private let bookmarkCreator: (URL) -> Data?
-    private let exportSessionFactory: (AVAsset) -> VideoExportSession?
+    private let resolveBookmark: @Sendable (Data) async throws -> BookmarkResolver.ResolvedBookmark
+    private let bookmarkCreator: @Sendable (URL) -> Data?
+    private let exportSessionFactory: @Sendable (AVAsset) -> @Sendable VideoExportSession?
 
     private var exporter: VideoExportSession?
     private var progressTask: Task<Void, Never>?
@@ -55,7 +55,7 @@ final class ExportViewModel: ObservableObject {
         bookmarkCreator: @escaping (URL) -> Data? = { url in
             BookmarkResolver.bookmark(for: url)
         },
-        exportSessionFactory: @escaping (AVAsset) -> VideoExportSession? = ExportViewModel.defaultExportSessionFactory
+        exportSessionFactory: @escaping @Sendable (AVAsset) -> @Sendable VideoExportSession? = ExportViewModel.defaultExportSessionFactory
     ) {
         self.resolveBookmark = resolveBookmark
         self.bookmarkCreator = bookmarkCreator
@@ -66,7 +66,9 @@ final class ExportViewModel: ObservableObject {
     deinit {
         progressTask?.cancel()
         exporter?.cancelExport()
-        resetState()
+        Task { @MainActor in
+            self.resetState()
+        }
     }
 
     /// Resets the export state and clears exporter and progressTask.
@@ -141,7 +143,9 @@ final class ExportViewModel: ObservableObject {
                     }
 
                     self.progressTask?.cancel()
-                    self.resetState()
+                    Task { @MainActor in
+                        self.resetState()
+                    }
                 }
             }
 
@@ -154,7 +158,9 @@ final class ExportViewModel: ObservableObject {
             isExporting = false
             progressTask?.cancel()
             progressTask = nil
-            resetState()
+            Task { @MainActor in
+                self.resetState()
+            }
         }
     }
 
@@ -165,7 +171,9 @@ final class ExportViewModel: ObservableObject {
         isExporting = false
         exportCompleted = false
         progressTask = nil
-        resetState()
+        Task { @MainActor in
+            self.resetState()
+        }
     }
 
     private func scheduleBookmarkRefresh(for project: Project, resolvedURL: URL, handler: BookmarkRefreshHandler?) {
@@ -174,7 +182,7 @@ final class ExportViewModel: ObservableObject {
         handler(project, refreshedBookmark)
     }
 
-    nonisolated private static func defaultExportSessionFactory(for asset: AVAsset) -> VideoExportSession? {
+    nonisolated private static func defaultExportSessionFactory(for asset: AVAsset) -> @Sendable VideoExportSession? {
         AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
     }
 
