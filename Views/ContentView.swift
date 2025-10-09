@@ -1,4 +1,4 @@
-import SwiftUI
+@preconcurrency import SwiftUI
 import PhotosUI
 
 @MainActor
@@ -29,20 +29,7 @@ struct ContentView: View {
                         matching: .videos,
                         photoLibrary: .shared()
                     ) {
-                        Label(
-                            {
-                                let loadingText: String
-                                if isProcessingSelection {
-                                    loadingText = "Loading..."
-                                } else if projectStore.currentProject.videoBookmark == nil {
-                                    loadingText = "Select Video"
-                                } else {
-                                    loadingText = "Change Video"
-                                }
-                                return loadingText
-                            }(),
-                            systemImage: "film"
-                        )
+                        Label(primaryActionLabelText, systemImage: "film")
                     }
                     .disabled(isProcessingSelection || exportViewModel.isExporting)
                 }
@@ -64,6 +51,12 @@ struct ContentView: View {
         } message: {
             Text(alertMessage ?? "An unknown error occurred.")
         }
+    }
+
+    private var primaryActionLabelText: String {
+        if isProcessingSelection { return "Loading..." }
+        if projectStore.currentProject.videoBookmark == nil { return "Select Video" }
+        return "Change Video"
     }
 
     @ViewBuilder
@@ -141,8 +134,12 @@ struct ContentView: View {
 
     @MainActor
     private func handleSelection(_ item: PhotosPickerItem) async {
-        isProcessingSelection = true
-        defer { isProcessingSelection = false }
+        await MainActor.run {
+            isProcessingSelection = true
+        }
+        defer {
+            Task { await MainActor.run { isProcessingSelection = false } }
+        }
 
         do {
             guard let movieData = try await item.loadTransferable(type: Data.self) else {
@@ -200,18 +197,21 @@ struct ContentView: View {
 
     @MainActor
     private func startExport() async {
-        let project = projectStore.currentProject
+        let project = await MainActor.run { projectStore.currentProject }
         await startExport(with: project)
     }
 
     @MainActor
     private func startExport(with project: Project) async {
         await exportViewModel.startExport(from: project) { project, bookmarkData in
-            await MainActor.run {
-                var refreshed = project
-                refreshed.videoBookmark = bookmarkData
-                refreshed.updatedAt = Date()
-                projectStore.update(refreshed)
+            // The callback is @Sendable (Project, Data) async -> Void
+            Task {
+                await MainActor.run {
+                    var refreshed = project
+                    refreshed.videoBookmark = bookmarkData
+                    refreshed.updatedAt = Date()
+                    projectStore.update(refreshed)
+                }
             }
         }
     }
