@@ -204,7 +204,7 @@ struct ContentView: View {
 
     @MainActor
     private func startExport() async {
-        let project = await MainActor.run { projectStore.currentProject }
+        let project = projectStore.currentProject
         await startExport(with: project)
     }
 
