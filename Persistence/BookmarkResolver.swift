@@ -38,7 +38,7 @@ enum BookmarkResolver {
     }
 
     /// Resolves bookmark data and performs an operation on the resolved URL.
-    static func withResolvedBookmark<T>(_ data: Data, perform block: @Sendable (URL) throws -> T) async rethrows -> T? {
+    static func withResolvedBookmark<T>(_ data: Data, perform block: @Sendable (URL) throws -> T) async throws -> T {
         let resolved = try await resolveBookmark(from: data)
         return try block(resolved.url)
     }

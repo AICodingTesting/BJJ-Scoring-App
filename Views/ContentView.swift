@@ -24,18 +24,21 @@ struct ContentView: View {
             .navigationTitle("BJJ Score Tracker")
             .toolbar {
                 ToolbarItem(placement: .primaryAction) {
+                    let labelText = primaryActionLabelText
                     PhotosPicker(
                         selection: $selectedItem,
                         matching: .videos,
                         photoLibrary: .shared()
                     ) {
-                        Label(primaryActionLabelText, systemImage: "film")
+                        Label(labelText, systemImage: "film")
                     }
                     .disabled(isProcessingSelection || exportViewModel.isExporting)
                 }
             }
         }
-        .overlay(alignment: .center, content: exportOverlay)
+        .overlay(alignment: .center) {
+            exportOverlay()
+        }
         // Observe selectedItem using task instead of onChange
         .task(id: selectedItem, priority: .userInitiated) {
             guard let newItem = selectedItem else { return }
@@ -204,15 +207,10 @@ struct ContentView: View {
     @MainActor
     private func startExport(with project: Project) async {
         await exportViewModel.startExport(from: project) { project, bookmarkData in
-            // The callback is @Sendable (Project, Data) async -> Void
-            Task {
-                await MainActor.run {
-                    var refreshed = project
-                    refreshed.videoBookmark = bookmarkData
-                    refreshed.updatedAt = Date()
-                    projectStore.update(refreshed)
-                }
-            }
+            var refreshed = project
+            refreshed.videoBookmark = bookmarkData
+            refreshed.updatedAt = Date()
+            projectStore.update(refreshed)
         }
     }
 }
