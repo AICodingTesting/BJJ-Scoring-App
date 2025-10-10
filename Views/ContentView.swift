@@ -32,7 +32,11 @@ struct ContentView: View {
                     ) {
                         Label(labelText, systemImage: "film")
                     }
-                    .disabled(isProcessingSelection || exportViewModel.isExporting)
+                    .disabled {
+                        Task { @MainActor in
+                            isProcessingSelection || exportViewModel.isExporting
+                        }
+                    }
                 }
             }
         }
