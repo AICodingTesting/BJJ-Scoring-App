@@ -1,4 +1,5 @@
-@preconcurrency import AVFoundation
+import AVFoundation
+import Dispatch
 import Foundation
 
 protocol VideoExportSession: AnyObject {
@@ -7,7 +8,7 @@ protocol VideoExportSession: AnyObject {
     var outputURL: URL? { get set }
     var outputFileType: AVFileType? { get set }
     var error: Error? { get }
-    func exportAsynchronously(completionHandler handler: @escaping @Sendable () -> Void)
+    func exportAsynchronously(completionHandler handler: @escaping () -> Void)
     func cancelExport()
 }
 
