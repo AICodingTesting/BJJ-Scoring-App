@@ -40,9 +40,21 @@ struct MatchEditorView: View {
         .safeAreaInset(edge: .bottom, spacing: 0) {
             controlsInset
         }
-        .onAppear(perform: prepareView)
-        .onChange(of: project.id) { _ in prepareView(forceReconfigure: true) }
-        .onChange(of: project.videoBookmark) { _ in prepareView(forceReconfigure: true) }
+        .onAppear {
+            Task { @MainActor in
+                prepareView()
+            }
+        }
+        .onChange(of: project.id) { _ in
+            Task { @MainActor in
+                prepareView(forceReconfigure: true)
+            }
+        }
+        .onChange(of: project.videoBookmark) { _ in
+            Task { @MainActor in
+                prepareView(forceReconfigure: true)
+            }
+        }
         .onChange(of: playerViewModel.currentTime) { newValue in
             guard !isScrubbing else { return }
             scrubbingPosition = newValue

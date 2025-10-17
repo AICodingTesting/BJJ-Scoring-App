@@ -14,11 +14,15 @@ final class PlayerViewModel: ObservableObject {
     private var cancellables = Set<AnyCancellable>()
 
     deinit {
-        removeObservers()
+        Task { @MainActor in
+            self.removeObservers()
+        }
     }
 
     func load(url: URL) async {
-        removeObservers()
+        await MainActor.run {
+            self.removeObservers()
+        }
         isReady = false
         isPlaying = false
         currentTime = 0
@@ -65,7 +69,9 @@ final class PlayerViewModel: ObservableObject {
             guard let self else { return }
             let seconds = CMTimeGetSeconds(time)
             if seconds.isFinite {
-                self.currentTime = seconds
+                Task { @MainActor in
+                    self.currentTime = seconds
+                }
             }
         }
 
@@ -86,6 +92,7 @@ final class PlayerViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    @MainActor
     private func removeObservers() {
         if let player = player, let observer = timeObserver {
             player.removeTimeObserver(observer)

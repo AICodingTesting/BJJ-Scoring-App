@@ -1,3 +1,6 @@
+// ExportViewModel.swift
+// Updated for Swift 6 concurrency compliance.
+
 import AVFoundation
 import Dispatch
 import Foundation
@@ -12,8 +15,11 @@ protocol VideoExportSession: AnyObject {
     func cancelExport()
 }
 
-extension AVAssetExportSession: VideoExportSession {}
-extension AVAssetExportSession: @unchecked Sendable {}
+extension AVAssetExportSession: VideoExportSession {
+    func exportAsynchronously(completionHandler handler: @escaping () -> Void) {
+        self.exportAsynchronously(completionHandler: handler)
+    }
+}
 
 /// ViewModel responsible for exporting video assets asynchronously.
 @MainActor
@@ -42,9 +48,9 @@ final class ExportViewModel: ObservableObject {
     /// Error encountered during export, if any.
     @Published var exportError: Error?
 
-    private let resolveBookmark: @Sendable (Data) async throws -> BookmarkResolver.ResolvedBookmark
-    private let bookmarkCreator: @Sendable (URL) -> Data?
-    private let exportSessionFactory: @Sendable (AVAsset) -> @Sendable VideoExportSession?
+    private let resolveBookmark: (Data) async throws -> BookmarkResolver.ResolvedBookmark
+    private let bookmarkCreator: (URL) -> Data?
+    private let exportSessionFactory: (AVAsset) -> VideoExportSession?
 
     private var exporter: VideoExportSession?
     private var progressTask: Task<Void, Never>?
@@ -56,7 +62,7 @@ final class ExportViewModel: ObservableObject {
         bookmarkCreator: @escaping (URL) -> Data? = { url in
             BookmarkResolver.bookmark(for: url)
         },
-        exportSessionFactory: @escaping @Sendable (AVAsset) -> @Sendable VideoExportSession? = ExportViewModel.defaultExportSessionFactory
+        exportSessionFactory: @escaping (AVAsset) -> VideoExportSession? = ExportViewModel.defaultExportSessionFactory
     ) {
         self.resolveBookmark = resolveBookmark
         self.bookmarkCreator = bookmarkCreator
@@ -67,8 +73,8 @@ final class ExportViewModel: ObservableObject {
     deinit {
         progressTask?.cancel()
         exporter?.cancelExport()
-        Task { @MainActor in
-            self.resetState()
+        Task { @MainActor [weak self] in
+            self?.resetState()
         }
     }
 
@@ -128,23 +134,22 @@ final class ExportViewModel: ObservableObject {
 
             exportSession.exportAsynchronously { [weak self] in
                 guard let self else { return }
-                Task { @MainActor in
-                    self.isExporting = false
-                    switch exportSession.status {
-                    case .completed:
-                        self.exportCompleted = true
-                        self.exportURL = exportSession.outputURL
-                        self.exportProgress = 1.0
-                    case .failed:
-                        self.exportError = exportSession.error
-                    case .cancelled:
-                        self.exportError = NSError(domain: "ExportViewModel", code: -2, userInfo: [NSLocalizedDescriptionKey: "Export was cancelled."])
-                    default:
-                        break
-                    }
-
-                    self.progressTask?.cancel()
-                    Task { @MainActor in
+                Task {
+                    await MainActor.run {
+                        self.isExporting = false
+                        switch exportSession.status {
+                        case .completed:
+                            self.exportCompleted = true
+                            self.exportURL = exportSession.outputURL
+                            self.exportProgress = 1.0
+                        case .failed:
+                            self.exportError = exportSession.error
+                        case .cancelled:
+                            self.exportError = NSError(domain: "ExportViewModel", code: -2, userInfo: [NSLocalizedDescriptionKey: "Export was cancelled."])
+                        default:
+                            break
+                        }
+                        self.progressTask?.cancel()
                         self.resetState()
                     }
                 }
@@ -159,22 +164,21 @@ final class ExportViewModel: ObservableObject {
             isExporting = false
             progressTask?.cancel()
             progressTask = nil
-            Task { @MainActor in
+            await MainActor.run {
                 self.resetState()
             }
         }
     }
 
     /// Cancels any ongoing export operation safely and resets the export state.
+    @MainActor
     func cancelExport() {
         progressTask?.cancel()
         exporter?.cancelExport()
         isExporting = false
         exportCompleted = false
         progressTask = nil
-        Task { @MainActor in
-            self.resetState()
-        }
+        self.resetState()
     }
 
     private func scheduleBookmarkRefresh(for project: Project, resolvedURL: URL, handler: BookmarkRefreshHandler?) {
@@ -183,7 +187,7 @@ final class ExportViewModel: ObservableObject {
         handler(project, refreshedBookmark)
     }
 
-    nonisolated private static func defaultExportSessionFactory(for asset: AVAsset) -> @Sendable VideoExportSession? {
+    nonisolated private static func defaultExportSessionFactory(for asset: AVAsset) -> VideoExportSession? {
         AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetHighestQuality)
     }
 
