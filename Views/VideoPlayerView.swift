@@ -1,45 +1,37 @@
 import SwiftUI
-@preconcurrency import AVFoundation
+import AVFoundation
+import UIKit
 
 struct VideoPlayerView: UIViewRepresentable {
-    let player: AVPlayer?
+    var player: AVPlayer?
 
-    func makeUIView(context: Context) -> PlayerContainerView {
-        let view = PlayerContainerView()
-        view.player = player
+    func makeUIView(context: Context) -> PlayerView {
+        let view = PlayerView()
+        view.backgroundColor = .black
+        view.playerLayer.videoGravity = .resizeAspect
         return view
     }
 
-    func updateUIView(_ uiView: PlayerContainerView, context: Context) {
-        uiView.player = player
+    func updateUIView(_ uiView: PlayerView, context: Context) {
+        if uiView.player !== player {
+            uiView.player = player
+        }
+        uiView.playerLayer.videoGravity = .resizeAspect
+    }
+}
+
+final class PlayerView: UIView {
+    override static var layerClass: AnyClass { AVPlayerLayer.self }
+
+    var playerLayer: AVPlayerLayer { layer as! AVPlayerLayer }
+
+    var player: AVPlayer? {
+        get { playerLayer.player }
+        set { playerLayer.player = newValue }
     }
 
-    final class PlayerContainerView: UIView {
-        override class var layerClass: AnyClass { AVPlayerLayer.self }
-
-        var playerLayer: AVPlayerLayer { layer as! AVPlayerLayer }
-
-        override init(frame: CGRect) {
-            super.init(frame: frame)
-            configure()
-        }
-
-        required init?(coder: NSCoder) {
-            super.init(coder: coder)
-            configure()
-        }
-
-        private func configure() {
-            playerLayer.videoGravity = .resizeAspect
-            backgroundColor = .black
-        }
-
-        var player: AVPlayer? {
-            get { playerLayer.player }
-            set {
-                playerLayer.player = newValue
-                playerLayer.videoGravity = .resizeAspect
-            }
-        }
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        playerLayer.frame = bounds.integral
     }
 }

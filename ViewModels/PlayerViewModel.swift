@@ -39,6 +39,8 @@ final class PlayerViewModel: ObservableObject {
             let item = AVPlayerItem(asset: asset)
             configurePlayer(with: item)
             isReady = true
+            player?.play()
+            print("▶️ Playing video from \(url.lastPathComponent)")
         } catch {
             player = nil
             duration = 0

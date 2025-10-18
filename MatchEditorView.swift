@@ -104,6 +104,11 @@ struct MatchEditorView: View {
         }, message: {
             Text(loadError ?? "An unknown error occurred while loading the video.")
         })
+        .onReceive(NotificationCenter.default.publisher(for: .didUpdateProjectVideo)) { _ in
+            Task { @MainActor in
+                prepareView(forceReconfigure: true)
+            }
+        }
     }
 
     private var header: some View {
@@ -132,6 +137,8 @@ struct MatchEditorView: View {
             Group {
                 if let player = playerViewModel.player, playerViewModel.isReady {
                     VideoPlayerView(player: player)
+                        .ignoresSafeArea()
+                        .background(Color.black)
                         .overlay(alignment: .topLeading) {
                             ScoreOverlayView(
                                 score: timelineViewModel.currentScore,
@@ -139,8 +146,9 @@ struct MatchEditorView: View {
                                 currentTime: scrubbingPosition
                             )
                             .padding()
+                            .background(Color.clear)
                         }
-                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+                        .mask(RoundedRectangle(cornerRadius: 24, style: .continuous))
                         .overlay(
                             RoundedRectangle(cornerRadius: 24, style: .continuous)
                                 .stroke(Color.white.opacity(0.15), lineWidth: 1)
@@ -437,4 +445,8 @@ private struct AdaptiveStack<Content: View>: View {
         }
         .frame(minHeight: 0)
     }
+}
+
+extension Notification.Name {
+    static let didUpdateProjectVideo = Notification.Name("didUpdateProjectVideo")
 }

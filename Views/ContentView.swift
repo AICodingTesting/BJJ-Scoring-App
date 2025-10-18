@@ -1,13 +1,16 @@
-@preconcurrency import SwiftUI
+import SwiftUI
 import PhotosUI
+import Foundation
 
 @MainActor
 struct ContentView: View {
+    // Environment
     @EnvironmentObject private var projectStore: ProjectStore
     @EnvironmentObject private var playerViewModel: PlayerViewModel
     @EnvironmentObject private var timelineViewModel: TimelineViewModel
     @EnvironmentObject private var exportViewModel: ExportViewModel
 
+    // UI State
     @State private var selectedItem: PhotosPickerItem?
     @State private var isProcessingSelection = false
     @State private var alertMessage: String?
@@ -39,11 +42,12 @@ struct ContentView: View {
         .overlay(alignment: .center) {
             exportOverlay()
         }
-        // Observe selectedItem using task instead of onChange
+        // React to a new selection
         .task(id: selectedItem, priority: .userInitiated) {
             guard let newItem = selectedItem else { return }
             await handleSelection(newItem)
         }
+        // Bubble up export errors
         .onChange(of: exportViewModel.exportError?.localizedDescription) { description in
             guard let description else { return }
             alertMessage = description
@@ -135,53 +139,66 @@ struct ContentView: View {
         }
     }
 
-    @MainActor
+    // MARK: - Selection Handling (async-safe)
+
     private func handleSelection(_ item: PhotosPickerItem) async {
-        await MainActor.run {
-            isProcessingSelection = true
-        }
-        defer {
-            Task { await MainActor.run { isProcessingSelection = false } }
-        }
+        await MainActor.run { isProcessingSelection = true }
+        defer { Task { await MainActor.run { isProcessingSelection = false } } }
 
-        do {
-            guard let movieData = try await item.loadTransferable(type: Data.self) else {
-                throw SelectionError.failedToLoad
-            }
+        Task.detached(priority: .userInitiated) {
+            do {
+                print("📦 Loading video data from PhotosPickerItem...")
+                guard let movieData = try await item.loadTransferable(type: Data.self) else {
+                    throw SelectionError.failedToLoad
+                }
 
-            let destinationURL = try await persistVideoData(movieData, identifier: item.itemIdentifier)
-            guard let bookmarkData = BookmarkResolver.bookmark(for: destinationURL) else {
-                throw SelectionError.failedToCreateBookmark
-            }
+                print("💾 Persisting video data...")
+                let destinationURL = try await persistVideoData(movieData, identifier: item.itemIdentifier)
 
-            var updatedProject = projectStore.currentProject
-            updatedProject.videoBookmark = bookmarkData
-            updatedProject.videoFilename = destinationURL.lastPathComponent
-            updatedProject.duration = 0
-            updatedProject.events = []
-            updatedProject.notes = []
-            if updatedProject.title == "New Match" {
-                updatedProject.title = destinationURL.deletingPathExtension().lastPathComponent
-            }
-            if updatedProject.metadata.title.isEmpty {
-                updatedProject.metadata.title = updatedProject.title
-            }
-            updatedProject.updatedAt = Date()
-            await MainActor.run {
-                projectStore.update(updatedProject)
-            }
+                print("🔖 Creating bookmark data...")
+                guard let bookmarkData = BookmarkResolver.bookmark(for: destinationURL) else {
+                    throw SelectionError.failedToCreateBookmark
+                }
 
-            timelineViewModel.configure(events: [], notes: [])
-            timelineViewModel.updateCurrentScore(for: 0)
-            playerViewModel.pause()
+                print("🧠 Preparing project update...")
+                var updatedProject = await MainActor.run { projectStore.currentProject }
+                updatedProject.videoBookmark = bookmarkData
+                updatedProject.videoFilename = destinationURL.lastPathComponent
+                updatedProject.duration = 0
+                updatedProject.events = []
+                updatedProject.notes = []
+                if updatedProject.title == "New Match" {
+                    updatedProject.title = destinationURL.deletingPathExtension().lastPathComponent
+                }
+                if updatedProject.metadata.title.isEmpty {
+                    updatedProject.metadata.title = updatedProject.title
+                }
+                updatedProject.updatedAt = Date()
 
-            selectedItem = nil
-        } catch {
-            alertMessage = error.localizedDescription
-            isShowingAlert = true
+                print("💽 Saving project update...")
+                await MainActor.run {
+                    projectStore.currentProject = updatedProject
+                    projectStore.update(updatedProject)
+                    print("📎 After update: videoBookmark = \(String(describing: projectStore.currentProject.videoBookmark != nil))")
+                    timelineViewModel.configure(events: [], notes: [])
+                    timelineViewModel.updateCurrentScore(for: 0)
+                    playerViewModel.pause()
+                    NotificationCenter.default.post(name: .didUpdateProjectVideo, object: nil)
+                    selectedItem = nil
+                }
+
+                print("✅ Video imported successfully: \(destinationURL.lastPathComponent)")
+            } catch {
+                print("❌ Import error: \(error)")
+                await MainActor.run {
+                    alertMessage = error.localizedDescription
+                    isShowingAlert = true
+                }
+            }
         }
     }
 
+    // Persist to Documents (async-safe)
     private func persistVideoData(_ data: Data, identifier: String?) async throws -> URL {
         try await Task.detached(priority: .userInitiated) { () throws -> URL in
             let fileManager = FileManager.default
@@ -198,13 +215,13 @@ struct ContentView: View {
         }.value
     }
 
-    @MainActor
+    // MARK: - Export
+
     private func startExport() async {
         let project = projectStore.currentProject
         await startExport(with: project)
     }
 
-    @MainActor
     private func startExport(with project: Project) async {
         await exportViewModel.startExport(from: project) { project, bookmarkData in
             var refreshed = project
@@ -214,6 +231,8 @@ struct ContentView: View {
         }
     }
 }
+
+// MARK: - Errors
 
 extension ContentView {
     enum SelectionError: LocalizedError {

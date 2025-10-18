@@ -7,9 +7,16 @@ struct BJJScoreTrackerApp: App {
     @StateObject private var timelineViewModel = TimelineViewModel()
     @StateObject private var exportViewModel = ExportViewModel()
 
+    init() {
+        print("🚀 BJJScoreTrackerApp initialized.")
+    }
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .onAppear {
+                    print("🟢 Launching ContentView…")
+                }
                 .environmentObject(projectStore)
                 .environmentObject(playerViewModel)
                 .environmentObject(timelineViewModel)
